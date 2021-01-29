@@ -212,11 +212,6 @@ typedef enum
 
 /**         Functions definition         */
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 	int8_t HIDS_getDeviceID(uint8_t *devID);
 
 	/* Standard Configurations */

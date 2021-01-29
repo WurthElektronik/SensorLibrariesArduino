@@ -125,12 +125,6 @@ typedef enum {
 	TIDS_ODR_200HZ = 3,	/* 200 Hz */
 } TIDS_output_data_rate_t;
 
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 	/**         Functions definition         */
 
 	/* Device ID */

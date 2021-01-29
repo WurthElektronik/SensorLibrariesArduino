@@ -627,13 +627,6 @@ typedef enum {
 	pulsed = 1
 }ITDS_drdy_pulse;
 
-
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 	/* **********************/
 	/* Functions definition */
 	/* **********************/

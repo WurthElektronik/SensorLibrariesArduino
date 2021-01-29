@@ -55,7 +55,7 @@ void setup()
   sensor.init(PADS_ADDRESS_I2C_1); 
 
   // Set the free run mode with given ODR
-  sensor.set_continous_mode(ODR);  
+  sensor.set_continuous_mode(ODR);  
 
   // Enable low-noise configurataion
   sensor.set_low_noise_mode();

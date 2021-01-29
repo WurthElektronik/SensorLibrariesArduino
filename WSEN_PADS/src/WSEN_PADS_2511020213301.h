@@ -360,12 +360,6 @@ typedef enum {
 	PADS_continuousToFifo = 7
 }PADS_fifo_mode_t;
 
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 	/**         Functions definition         */
 
 	int8_t PADS_getDeviceID(uint8_t *devID);
