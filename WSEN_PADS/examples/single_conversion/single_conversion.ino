@@ -18,7 +18,7 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2021 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
@@ -29,8 +29,8 @@
 
 
   This example reads the temperature and the pressure from the WSEN-PADS sensor in
-  the continous mode. 
-  The low-noise configurataion and the additional low pass filter are enabled.
+  the single conversion mode. 
+  The low-noise configuration and the additional low pass filter are enabled.
 
   The SAO pin is connected to positive supply voltage.
 

@@ -18,7 +18,7 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2021 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
@@ -49,14 +49,14 @@ void setup() {
   int sensor_ID = sensor.get_DeviceID();
   Serial.print("Sensor ID: ");
 
-  // Print the device ID in hexademical on the serial monitor
+  // Print the device ID in hexadecimal on the serial monitor
   Serial.print(sensor_ID, HEX);
   Serial.println();
 
   // Check if the determined device ID matches the correct device ID (->A0) of this sensor
   if (sensor_ID == PADS_DEVICE_ID_VALUE)
   {
-    Serial.println("Communication successfull !");
+    Serial.println("Communication successful !");
   } else
   {
     Serial.println("No communication with the device !");

@@ -18,7 +18,7 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2021 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
@@ -59,44 +59,44 @@ int Sensor_TIDS::Select_ODR()
 
   switch (ODR)
   {
-  case 200:
-  {
-    TIDS_setOutputDataRate(TIDS_ODR_200HZ);
-    TIDS_setContinuousMode(TIDS_enable);
-    break;
-  }
+    case 200:
+    {
+      TIDS_setOutputDataRate(TIDS_ODR_200HZ);
+      TIDS_setContinuousMode(TIDS_enable);
+      break;
+    }
 
-  case 100:
-  {
-    TIDS_setOutputDataRate(TIDS_ODR_100HZ);
-    TIDS_setContinuousMode(TIDS_enable);
-    break;
-  }
+    case 100:
+    {
+      TIDS_setOutputDataRate(TIDS_ODR_100HZ);
+      TIDS_setContinuousMode(TIDS_enable);
+      break;
+    }
 
-  case 50:
-  {
-    TIDS_setOutputDataRate(TIDS_ODR_50HZ);
-    TIDS_setContinuousMode(TIDS_enable);
-    break;
-  }
+    case 50:
+    {
+      TIDS_setOutputDataRate(TIDS_ODR_50HZ);
+      TIDS_setContinuousMode(TIDS_enable);
+      break;
+    }
 
-  case 25:
-  {
-    TIDS_setOutputDataRate(TIDS_ODR_25HZ);
-    TIDS_setContinuousMode(TIDS_enable);
-    break;
-  }
+    case 25:
+    {
+      TIDS_setOutputDataRate(TIDS_ODR_25HZ);
+      TIDS_setContinuousMode(TIDS_enable);
+      break;
+    }
 
-  case 1:
-  {
-    TIDS_setContinuousMode(TIDS_enable); // Low ODR bit is enabled, ODR 1 Hz
-    break;
-  }
+    case 1:
+    {
+      TIDS_setContinuousMode(TIDS_enable); // Low ODR bit is enabled, ODR 1 Hz
+      break;
+    }
 
-  default:
-  {
-    return WE_FAIL;
-  }
+    default:
+    {
+      return WE_FAIL;
+    }
   }
   return WE_SUCCESS;
 }
@@ -153,20 +153,17 @@ int Sensor_TIDS::get_SW_RESET()
 */
 float Sensor_TIDS::read_temperature()
 {
-  TIDS_getRAWTemperature(&rawTemp);
-
   float float_temp;
+  TIDS_getRAWTemperature(&rawTemp);
 
   if (rawTemp > 32767)
   {
     T_neg = rawTemp - 32768;
-    rawTemp = (0 - 32768 + T_neg);
-
-    TIDS_getTemperature(&float_temp);
+    float_temp = (float)(0 - 32768 + T_neg)/100;
   }
   else
   {
-    TIDS_getTemperature(&float_temp);
+    float_temp = (float)rawTemp/100;
   }
 
   return float_temp;

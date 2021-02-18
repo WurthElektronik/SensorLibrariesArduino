@@ -39,11 +39,11 @@ Each of these folders contain two sub folders
 
 ### Importing the WE sensor library into Arduino IDE
 
-1. Download/clone repository and create a zip file of the sensor folder of interest. Alternatively, Each individual library is available for download as a **zip** package from https://www.we-online.com/web/en/electronic_components/produkte_pb/service_pbs/wco/software/softwareuebersicht.php
+1. Download this repository. Unzip the package to desired location.
 
 2. Open the Arduino IDE. 
 
-3. As shown in the image below, navigate to **Sketch > Include Library > Add .ZIP Library.** in the Arduino IDE. Select the option to **"Add .ZIP Library"**.  
+3. As shown in the image below, navigate to **Sketch > Include Library > Add .ZIP Library.** in the Arduino IDE. Select the option to **"Add .ZIP Library"**. Select the sensor library package of interest from [libraries](libraries) folder and import it to the workspace.
 
 ![AddZip](assets/addZip.png)
 

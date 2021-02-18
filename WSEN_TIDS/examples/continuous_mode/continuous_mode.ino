@@ -18,7 +18,7 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2021 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
@@ -29,7 +29,7 @@
 
 
   This example reads the temperature from the WSEN-TIDS sensor in
-  the continous mode. 
+  the continuous mode. 
   
 
   The SAO pin is connected to positive supply voltage.
@@ -65,11 +65,11 @@ void loop()
 {
 
   // Read and calculate the temperature
-  int temperature = sensor.read_temperature();
+  float temperature = sensor.read_temperature();
 
   // Print the temperature on the serial monitor
   Serial.print(temperature);
-  Serial.println(" Celsius");
+  Serial.println(" degC");
 
   // Waiting time between measurement
   int waitMillis = 1000 / ODR;

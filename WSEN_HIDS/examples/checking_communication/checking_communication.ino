@@ -18,63 +18,52 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2021 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
 
-
 /*
+ * WSEN-HIDS  communication check
+ * 
+ * Initializing and reading the device ID for this sensor.
+ * 
+ * 
+ */
+ 
+#include "WSEN_HIDS.h"
 
-  WSEN-PADS - Read from FIFO buffer 
+Sensor_HIDS sensor;
 
-  This example reads the temperature and the pressure from the FIFO buffer in
-  the continous mode. 
+void setup() {
 
-  The temperature is printed in °C and the pressure in kPa on the serial monitor
+  delay(5000);
 
-
-*/
-
-#include "WSEN_PADS.h"
-
-Sensor_PADS sensor;
-
-//The Output Data Rate in Hz
-int ODR = 25;
-
-void setup()
-{
   Serial.begin(9600);
 
   // Initialize the I2C interface
-  sensor.init(PADS_ADDRESS_I2C_1);
+  sensor.init(HIDS_ADDRESS_I2C_0);
 
-  // Set the continous mode 2
-  sensor.set_FIFO_mode(2);
+  // Get the device ID for this sensor
+  int sensor_ID = sensor.get_DeviceID();
+  Serial.print("Sensor ID: ");
+
+  // Print the device ID in hexadecimal on the serial monitor
+  Serial.print(sensor_ID, HEX);
+  Serial.println();
+
+  // Check if the determined device ID matches the correct device ID (->0xBC) of this sensor
+  if (sensor_ID == HIDS_DEVICE_ID_VALUE)
+  {
+    Serial.println("Communication successful !");
+  } else
+  {
+    Serial.println("No communication with the device !");
+  }
+
 }
 
-void loop()
-{
-  Serial.println("Temperature: ");
+void loop() {
+  // put your main code here, to run repeatedly:
 
-  // Calculate the temperature and print it on the serial monitor
-  Serial.print(sensor.read_FIFO_temperature());
-
-  // Calculate the temperature and print it on the serial monitor
-  Serial.println("Pressure: ");
-  Serial.print(sensor.read_FIFO_pressure());
-
-  Serial.print("fill level:");
-
-  // Get the number of data sets stored in the FIFO
-  Serial.println(sensor.get_FIFO_fill_level());
-  Serial.println("-------");
-
-  // Waiting time between measurement
-  int waitMillis = 1000 / ODR;
-
-  // Wait before continuing with the next measurement
-  delay(1000 / ODR);
 }
-

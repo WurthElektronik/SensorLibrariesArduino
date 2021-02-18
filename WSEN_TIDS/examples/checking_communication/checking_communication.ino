@@ -18,7 +18,7 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2021 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
@@ -48,7 +48,7 @@ void setup() {
   int sensor_ID = sensor.get_DeviceID();
   Serial.print("Sensor ID: ");
 
-  // Print the device ID in hexademical on the serial monitor
+  // Print the device ID in hexadecimal on the serial monitor
   Serial.print(sensor_ID, HEX);
   Serial.println();
 

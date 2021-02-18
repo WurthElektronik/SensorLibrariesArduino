@@ -18,7 +18,7 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2020 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2021 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
@@ -60,34 +60,34 @@ int Sensor_HIDS::select_ODR()
 {
     switch (ODR)
     {
-    case 0:
-    {
-        HIDS_setOdr(oneShot);
-        break;
-    }
+        case 0:
+        {
+            HIDS_setOdr(oneShot);
+            break;
+        }
 
-    case 1:
-    {
-        HIDS_setOdr(odr1HZ);
-        break;
-    }
+        case 1:
+        {
+            HIDS_setOdr(odr1HZ);
+            break;
+        }
 
-    case 2:
-    {
-        HIDS_setOdr(odr7HZ);
-        break;
-    }
+        case 2:
+        {
+            HIDS_setOdr(odr7HZ);
+            break;
+        }
 
-    case 3:
-    {
-        HIDS_setOdr(odr12_5HZ);
-        break;
-    }
+        case 3:
+        {
+            HIDS_setOdr(odr12_5HZ);
+            break;
+        }
 
-    default:
-    {
-        return WE_FAIL;
-    }
+        default:
+        {
+            return WE_FAIL;
+        }
     }
     return WE_SUCCESS;
 
@@ -245,5 +245,29 @@ float Sensor_HIDS::get_Temperature()
 	return temperature ;
 }
 
+/**
+ * @brief  Set the sensor to single conversion mode
+ * @param  no parameter.
+ * @retval none
+ */
+void Sensor_HIDS::set_single_conversion()
+{
+    HIDS_state_t oneShot = HIDS_enable;
+    ODR = 0;
+    select_ODR();
+    HIDS_enOneShot(oneShot);
+}
 
-
+/**
+ * @brief  Set the sensor to continuous mode
+ * @param  no parameter.
+ * @retval none
+ */   
+void Sensor_HIDS::set_continuous_mode(int outputDataRate)
+{
+    //Enable block data update
+    HIDS_setBdu(HIDS_enable);
+    ODR = outputDataRate;
+    select_ODR();
+    HIDS_setPowerMode(activeMode);
+}

@@ -35,39 +35,12 @@ public:
     int init(int address);
     int get_DeviceID();
 	
-	/* Standard Configurations */
-	uint8_t set_HumAvg();
-	uint8_t get_HumAvg();
-	uint8_t set_TempAvg();
-	uint8_t get_TempAvg();
-
 	int ODR;
     int select_ODR();
 
-	int8_t set_Bdu();
-	int8_t get_BduState();
+	void set_single_conversion();
+    void set_continuous_mode(int ODR);
 
-	int8_t set_PowerMode();
-	int8_t get_PowerMode();
-	int8_t en_OneShot();
-	int8_t get_OneShotState();
-
-	int8_t en_Heater();
-	int8_t get_HeaterState();
-
-	int8_t en_RebootMemory();
-	int8_t get_RebootMemoryState();
-
-	int8_t en_Int();
-	int8_t get_IntState();
-
-	int8_t set_IntPinType();
-	int8_t get_IntPinType();
-
-	int8_t set_IntLevel();
-	int8_t get_IntLevel();
-
-	
 	/*get the temperature and Humidity Output data  */
 
 	uint16_t get_H_T_out();

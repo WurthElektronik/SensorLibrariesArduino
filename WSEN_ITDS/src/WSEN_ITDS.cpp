@@ -18,7 +18,7 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2021 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
@@ -60,69 +60,69 @@ int Sensor_ITDS::select_ODR()
 {
     switch (ODR)
     {
-    case 0:
-    {
-        ITDS_setOutputDataRate(ITDS_odr0);
-        break;
-    }
+        case 0:
+        {
+            ITDS_setOutputDataRate(ITDS_odr0);
+            break;
+        }
 
-    case 1:
-    {
-        ITDS_setOutputDataRate(ITDS_odr1);
-        break;
-    }
+        case 1:
+        {
+            ITDS_setOutputDataRate(ITDS_odr1);
+            break;
+        }
 
-    case 2:
-    {
-        ITDS_setOutputDataRate(ITDS_odr2);
-        break;
-    }
+        case 2:
+        {
+            ITDS_setOutputDataRate(ITDS_odr2);
+            break;
+        }
 
-    case 3:
-    {
-        ITDS_setOutputDataRate(ITDS_odr3);
-        break;
-    }
+        case 3:
+        {
+            ITDS_setOutputDataRate(ITDS_odr3);
+            break;
+        }
 
-    case 4:
-    {
-        ITDS_setOutputDataRate(ITDS_odr4);
-        break;
-    }
+        case 4:
+        {
+            ITDS_setOutputDataRate(ITDS_odr4);
+            break;
+        }
 
-    case 5:
-    {
-        ITDS_setOutputDataRate(ITDS_odr5);
-        break;
-    }
+        case 5:
+        {
+            ITDS_setOutputDataRate(ITDS_odr5);
+            break;
+        }
 
-    case 6:
-    {
-        ITDS_setOutputDataRate(ITDS_odr6);
-        break;
-    }
+        case 6:
+        {
+            ITDS_setOutputDataRate(ITDS_odr6);
+            break;
+        }
 
-    case 7:
-    {
-        ITDS_setOutputDataRate(ITDS_odr7);
-        break;
-    }
+        case 7:
+        {
+            ITDS_setOutputDataRate(ITDS_odr7);
+            break;
+        }
 
-    case 8:
-    {
-        ITDS_setOutputDataRate(ITDS_odr8);
-        break;
-    }
+        case 8:
+        {
+            ITDS_setOutputDataRate(ITDS_odr8);
+            break;
+        }
 
-    case 9:
-    {
-        ITDS_setOutputDataRate(ITDS_odr9);
-        break;
-    }
-    default:
-    {
-        return WE_FAIL;
-    }
+        case 9:
+        {
+            ITDS_setOutputDataRate(ITDS_odr9);
+            break;
+        }
+        default:
+        {
+            return WE_FAIL;
+        }
     }
     return WE_SUCCESS;
 }
@@ -413,11 +413,11 @@ int Sensor_ITDS::get_temperature()
 
     if (RawTemp8 > 0 && RawTemp8 <= 0x36)
     {
-        Temp = RawTemp8 + 25;
+        Temp = (int)RawTemp8 + 25;
     }
     else
     {
-        Temp = -255 + RawTemp8 + 25;
+        Temp = -255 + (int)RawTemp8 + 25;
     }
 
     return Temp;

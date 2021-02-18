@@ -18,63 +18,60 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2021 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
 
-
 /*
 
-  WSEN-PADS - Read from FIFO buffer 
+  WSEN-HIDS - Read Sensor
 
-  This example reads the temperature and the pressure from the FIFO buffer in
-  the continous mode. 
 
-  The temperature is printed in °C and the pressure in kPa on the serial monitor
+  This example reads the humidity and temperature from the WSEN-HIDS sensor in
+  the continuous mode. 
+  
+
+  The temperature and humidity are printed on the serial monitor.
 
 
 */
 
-#include "WSEN_PADS.h"
+#include "WSEN_HIDS.h"
 
-Sensor_PADS sensor;
+Sensor_HIDS sensor;
 
 //The Output Data Rate in Hz
-int ODR = 25;
+int ODR = 1;
 
 void setup()
 {
+  delay(5000);
+  
   Serial.begin(9600);
 
   // Initialize the I2C interface
-  sensor.init(PADS_ADDRESS_I2C_1);
+  sensor.init(HIDS_ADDRESS_I2C_0);
 
-  // Set the continous mode 2
-  sensor.set_FIFO_mode(2);
+  //The Output Data Rate One shot mode
+  sensor.set_continuous_mode(ODR);
 }
 
 void loop()
 {
-  Serial.println("Temperature: ");
 
-  // Calculate the temperature and print it on the serial monitor
-  Serial.print(sensor.read_FIFO_temperature());
+  Serial.print("The humidity is: ");
+  //Print the humidity value on the serial monitor
+  Serial.print(sensor.get_Humidity());
+  Serial.println(" %");
 
-  // Calculate the temperature and print it on the serial monitor
-  Serial.println("Pressure: ");
-  Serial.print(sensor.read_FIFO_pressure());
-
-  Serial.print("fill level:");
-
-  // Get the number of data sets stored in the FIFO
-  Serial.println(sensor.get_FIFO_fill_level());
-  Serial.println("-------");
+  Serial.print("The temperature is: ");
+  Serial.print(sensor.get_Temperature());
+  Serial.println(" degC");
 
   // Waiting time between measurement
   int waitMillis = 1000 / ODR;
 
   // Wait before continuing with the next measurement
-  delay(1000 / ODR);
+  delay(waitMillis);
 }
-

@@ -18,7 +18,7 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2021 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
@@ -61,58 +61,58 @@ int Sensor_PADS::select_ODR()
   switch (ODR)
   {
 
-  case 200:
-  {
-    PADS_setOutputDataRate(PADS_ODR_200HZ);
-    break;
-  }
+    case 200:
+    {
+      PADS_setOutputDataRate(PADS_ODR_200HZ);
+      break;
+    }
 
-  case 100:
-  {
-    PADS_setOutputDataRate(PADS_ODR_100HZ);
-    break;
-  }
+    case 100:
+    {
+      PADS_setOutputDataRate(PADS_ODR_100HZ);
+      break;
+    }
 
-  case 75:
-  {
-    PADS_setOutputDataRate(PADS_ODR_75HZ);
-    break;
-  }
+    case 75:
+    {
+      PADS_setOutputDataRate(PADS_ODR_75HZ);
+      break;
+    }
 
-  case 50:
-  {
-    PADS_setOutputDataRate(PADS_ODR_50HZ);
-    break;
-  }
+    case 50:
+    {
+      PADS_setOutputDataRate(PADS_ODR_50HZ);
+      break;
+    }
 
-  case 25:
-  {
-    PADS_setOutputDataRate(PADS_ODR_25HZ);
-    break;
-  }
+    case 25:
+    {
+      PADS_setOutputDataRate(PADS_ODR_25HZ);
+      break;
+    }
 
-  case 10:
-  {
-    PADS_setOutputDataRate(PADS_ODR_10HZ);
-    break;
-  }
+    case 10:
+    {
+      PADS_setOutputDataRate(PADS_ODR_10HZ);
+      break;
+    }
 
-  case 1:
-  {
-    PADS_setOutputDataRate(PADS_ODR_1HZ); // Low ODR bit is enabled, ODR 1 Hz
-    break;
-  }
+    case 1:
+    {
+      PADS_setOutputDataRate(PADS_ODR_1HZ); // Low ODR bit is enabled, ODR 1 Hz
+      break;
+    }
 
-  case 0:
-  {
-    PADS_setOutputDataRate(PADS_ODR_PowerDown);
-    break;
-  }
+    case 0:
+    {
+      PADS_setOutputDataRate(PADS_ODR_PowerDown);
+      break;
+    }
 
-  default:
-  {
-    return WE_FAIL;
-  }
+    default:
+    {
+      return WE_FAIL;
+    }
   }
   return WE_SUCCESS;
 }
@@ -159,7 +159,7 @@ int Sensor_PADS::temp_ready_to_read()
   int result = PADS_getTempStatus(&state);
 
   if(result == WE_FAIL) { 
-  return WE_FAIL;
+    return WE_FAIL;
   } else {
     return state;
   }
@@ -176,7 +176,7 @@ int Sensor_PADS::pressure_ready_to_read()
   int result = PADS_getPresStatus(&state);
   
   if(result == WE_FAIL) { 
-  return WE_FAIL;
+    return WE_FAIL;
   } else {
     return state;
   }
@@ -189,20 +189,17 @@ int Sensor_PADS::pressure_ready_to_read()
 */
 float Sensor_PADS::read_temperature()
 {
-  PADS_getRAWTemperature(&rawTemp);
-
   float float_temp;
+  PADS_getRAWTemperature(&rawTemp);
 
   if (rawTemp > 32767)
   {
     T_neg = rawTemp - 32768;
-    rawTemp = (0 - 32768 + T_neg);
-
-    PADS_getTemperature(&float_temp);
+    float_temp = (float)(0 - 32768 + T_neg)/100;
   }
   else
   {
-    PADS_getTemperature(&float_temp);
+    float_temp = (float)rawTemp/100;
   }
 
   return float_temp;
@@ -214,8 +211,6 @@ float Sensor_PADS::read_temperature()
 */
 float Sensor_PADS::read_pressure()
 {
-  PADS_getRAWPressure(&rawPres);
-
   float float_pressure;
   PADS_getPressure(&float_pressure);
 
@@ -298,20 +293,18 @@ int Sensor_PADS::get_FIFO_mode()
 
 float Sensor_PADS::read_FIFO_temperature()
 {
-  PADS_getFifoRAWTemperature(&rawTemp);
-
   float float_temp;
+
+  PADS_getFifoRAWTemperature(&rawTemp);
 
   if (rawTemp > 32767)
   {
     T_neg = rawTemp - 32768;
-    rawTemp = (0 - 32768 + T_neg);
-
-    PADS_getFifoTemperature(&float_temp);
+    float_temp = (float)(0 - 32768 + T_neg)/100;
   }
   else
   {
-    PADS_getFifoTemperature(&float_temp);
+    float_temp = (float)rawTemp/100;
   }
 
   return float_temp;
@@ -324,8 +317,6 @@ float Sensor_PADS::read_FIFO_temperature()
 
 float Sensor_PADS::read_FIFO_pressure()
 {
-  PADS_getFifoRAWPressure(&rawPres);
-
   float float_pressure;
   PADS_getFifoPressure(&float_pressure);
 

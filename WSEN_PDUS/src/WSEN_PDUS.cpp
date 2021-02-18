@@ -67,16 +67,18 @@ int Sensor_PDUS::init(int address)
 */
 int Sensor_PDUS::getPresAndTemp(PDUS_Sensor_Type typ, float *presskPa, float *tempDeg)
 { 
-  uint16_t rawPres = 0, temporary = 0;
+  uint16_t rawPres = 0;
   
   uint16_t rawTemp = 0;
   
+  float temporary = 0;
+
   get_RawPresAndTemp(&rawPres, &rawTemp);
 
   
   /* calculate Temperature */
-  temporary = rawTemp - T_MIN_VAL_PDUS;
-  *tempDeg = (((float)temporary * 4.272) / (1000));
+  temporary = (float)(rawTemp) - T_MIN_VAL_PDUS;
+  *tempDeg = ((temporary * 4.272) / (1000));
 
 
   /* calculate Pressure */
