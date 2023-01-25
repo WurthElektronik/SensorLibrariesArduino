@@ -41,7 +41,8 @@
     pdus1, /*2513130810101  Range =  -1 to +1 kPa */
     pdus2, /*2513130810201  Range =  -10 to +10 kPa */
     pdus3, /*2513130810301  Range =   0 to 100 kPa */
-    pdus4, /*2513130810401  Range =  -100 to +100 kPa */
+    pdus4, /*2513130810401  Range =  -100 to +1000 kPa */
+    pdus5, /*2513130815401  Range =  0 to +1500 kPa */
   } PDUS_Sensor_Type;
   
 class Sensor_PDUS
