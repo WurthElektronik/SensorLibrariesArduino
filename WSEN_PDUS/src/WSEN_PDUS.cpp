@@ -103,7 +103,11 @@ int Sensor_PDUS::getPresAndTemp(PDUS_Sensor_Type typ, float *presskPa, float *te
     break;
   case pdus4:
     temporary = rawPres - P_MIN_VAL_PDUS;
-    *presskPa = (((float)temporary * 4.196) / (100)) + 100;
+    *presskPa = (((float)temporary * 4.196) / (100)) - 100;
+    break;
+  case pdus5:
+    temporary = rawPres - P_MIN_VAL_PDUS;
+    *presskPa = (((float)temporary * 5.722) / (100));
     break;
   default:
     return WE_FAIL;
