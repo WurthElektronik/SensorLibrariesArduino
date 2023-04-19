@@ -26,10 +26,11 @@ This repository contains the source code for all the sensor libraries from Würt
 |Match code   | Sensor type  |
 |---|---|
 |[WSEN-TIDS](https://www.we-online.de/katalog/en/WSEN-TIDS)  | Temperature sensor  |
-|[WSEN PADS](https://www.we-online.de/katalog/en/WSEN-PADS)  |Absolute pressure sensor |
-|[WSEN-HIDS](https://www.we-online.de/katalog/en/WSEN-HIDS)   | Humidity sensor |
-|[WSEN-ITDS](https://www.we-online.de/katalog/en/WSEN-ITDS)|Acceleration sensor|
-|[WSEN-PDUS](https://www.we-online.de/katalog/en/WSEN-PDUS)  | Differential pressure sensor  |
+|[WSEN PADS](https://www.we-online.de/katalog/en/WSEN-PADS)  | Absolute pressure sensor |
+|[WSEN-HIDS](https://www.we-online.de/katalog/en/WSEN-HIDS)  | Humidity sensor |
+|[WSEN-ITDS](https://www.we-online.de/katalog/en/WSEN-ITDS)  | Acceleration sensor (3 Axis) |
+|[WSEN-PDUS](https://www.we-online.de/katalog/en/WSEN-PDUS)  | Differential pressure sensor |
+|[WSEN-ISDS](https://www.we-online.de/katalog/en/WSEN-ISDS)  | Acceleration + Gyro sensor (3+3 Axis) |
 
 Each of these folders contain two sub folders
 
