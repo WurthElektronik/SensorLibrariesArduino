@@ -39,22 +39,46 @@ void setup()
   sensor.init(ITDS_ADDRESS_I2C_1);
 
   // FIFO in the Continous Mode (Mode 6)
-  sensor.set_FIFO_mode(6);
+  if (WE_FAIL == sensor.set_FIFO_mode(6))
+  {
+    Serial.println("Error: set_FIFO_mode(6). STOP!");
+    while(1);
+  }
+  
+  
+  int mode;
+  if (WE_FAIL == sensor.get_FIFO_mode(&mode))
+  {
+    Serial.println("Error: get_FIFO_mode(). STOP!");
+    while(1);
+  }
+  
   Serial.print("The FIFO is in the Mode ");
-  Serial.println(sensor.get_FIFO_mode());
+  Serial.println(mode);
 
   // Before changing the mode to FIFO mode set the bypass mode first
-  sensor.set_FIFO_mode(0); // Bypass 
-  sensor.set_FIFO_mode(1); // FIFO
+  if (WE_FAIL == sensor.set_FIFO_mode(0)) // Bypass 
+   {
+    Serial.println("Error: set_FIFO_mode(0). STOP!");
+    while(1);
+  }
+  if (WE_FAIL == sensor.set_FIFO_mode(1)) // FIFO
+   {
+    Serial.println("Error: set_FIFO_mode(1). STOP!");
+    while(1);
+  }
+  
+  if (WE_FAIL == sensor.get_FIFO_mode(&mode))
+  {
+    Serial.println("Error: get_FIFO_mode(). STOP!");
+    while(1);
+  }
+    
   Serial.print("The FIFO is in the Mode ");
-  Serial.println(sensor.get_FIFO_mode());
+  Serial.println(mode);
 }
 
 void loop()
 {
   // put your main code here, to run repeatedly:
 }
-
-
-
-

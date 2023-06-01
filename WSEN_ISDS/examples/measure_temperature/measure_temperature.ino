@@ -37,6 +37,7 @@
 #include "WSEN_ISDS.h"
 
 Sensor_ISDS sensor;
+int status;
 
 void setup()
 {
@@ -47,24 +48,56 @@ void setup()
   sensor.init(ISDS_ADDRESS_I2C_1);
 
   // Reset sensor
-  sensor.SW_RESET();
-  
-  // Set FIFO ODR to 12.5Hz
-  sensor.select_ODR(1);
+  status = sensor.SW_RESET();
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error:  SW_RESET(). Stop!");
+    while(1);  
+  }
+
+
+  status = sensor.select_ODR(1);
+  if (WE_FAIL == status)
+    {
+    Serial.println("Error:  select_ODR(). Stop!");
+    while(1);  
+  }
 
   // Set high performance mode
-  sensor.set_Mode(2);
+  status = sensor.set_Mode(2);
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error:  set_Mode(). Stop!");
+    while(1);  
+  }
+  
 
 }
 
 void loop()
 {
-    // Check if sensor is ready to measure the temperature
-  if (ISDS_enable == sensor.is_Temp_Ready())
+
+
+  // Check if sensor is ready to measure the temperature
+  status = sensor.is_Temp_Ready();
+    
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error: is_Temp_Ready(). Stop!");
+    while(1);
+  }
+  else if (1 == status)
   {
     //Print the temperature on the serial monitor
+    
+    float temperature;
+    if (WE_FAIL == sensor.get_temperature(&temperature))
+      {
+    Serial.println("Error:  get_temperature(). Stop!");
+    while(1);  
+    }
     Serial.println("Temperature in [°C]: ");
-    Serial.println(sensor.get_temperature());
+    Serial.println(temperature);
   }
   else
   {

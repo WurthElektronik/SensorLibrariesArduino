@@ -34,25 +34,30 @@ class Sensor_ISDS
 public:
     int init(int address);
     int get_DeviceID();
-    void power_down();
-    void SW_RESET();
+	
+    int power_down();
+    int SW_RESET();
+	
     int select_ODR(int ODR);
+    int set_Mode(int mode);
 
-    void set_Mode(int mode);
-
-    float get_Sensitivity();
     int is_ACC_Ready_To_Read();
     int is_Gyro_Ready_To_Read();
     int is_Temp_Ready();
-    int16_t get_acceleration_X();
-    int16_t get_acceleration_Y();
-    int16_t get_acceleration_Z();
-    int get_accelerations(int16_t* X, int16_t* Y, int16_t* Z);
-	int32_t get_angular_rate_X();
-    int32_t get_angular_rate_Y();
-    int32_t get_angular_rate_Z();
-    int get_angular_rates(int32_t* X, int32_t* Y, int32_t* Z);
-    float get_temperature();
+	int get_StatusRegister(ISDS_status_t *status);
+	int get_Sensitivity(float *sens);
+		
+    int get_acceleration_X(int16_t *acc_x);
+    int get_acceleration_Y(int16_t *acc_y);
+    int get_acceleration_Z(int16_t *acc_z);
+
+	int get_angular_rate_X(int32_t *rate_x);
+    int get_angular_rate_Y(int32_t *rate_y);
+    int get_angular_rate_Z(int32_t *rate_z);
+	
+	int get_accelerations(int16_t *X, int16_t *Y, int16_t *Z);
+    int get_angular_rates(int32_t *X, int32_t *Y, int32_t *Z);
+    int get_temperature(float *temp);
 
 private:
 };

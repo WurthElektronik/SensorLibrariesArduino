@@ -264,6 +264,7 @@ typedef enum
 
 	int8_t HIDS_getTempStatus(HIDS_state_t *temp_state);
 	int8_t HIDS_getHumStatus(HIDS_state_t *humidity_state);
+	int8_t HIDS_getStatusDrdy(HIDS_state_t *temp_state, HIDS_state_t *humidity_state);
 
 	int8_t HIDS_getRAWValues(int16_t *rawHumidity, int16_t *rawTemp);
 	int8_t HIDS_getHumidity(float *humidity);

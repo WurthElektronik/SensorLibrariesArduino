@@ -37,6 +37,7 @@
 #include "WSEN_TIDS.h"
 
 Sensor_TIDS sensor;
+int status;
 
 void setup()
 {
@@ -46,22 +47,47 @@ void setup()
   // Initialize the I2C interface
   sensor.init(TIDS_ADDRESS_I2C_1);
 
-  sensor.set_Temp_High_Limit(120);
+  status = sensor.set_Temp_High_Limit(120);
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error: set_Temp_High_Limit(). Stop!" );
+    while(1);
+  }
+  
   Serial.print("The temperature high limit is:  ");
   Serial.println(sensor.get_Temp_High_Limit());
   Serial.print("The high threshold temperature is:  ");
-  Serial.println(sensor.get_Threshold_High_Limit());
+
+  status = sensor.get_Threshold_High_Limit();
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error: get_Threshold_High_Limit(). Stop!" );
+    while(1);
+  }
+  Serial.println(status);
 
   Serial.println();
-  sensor.set_Temp_Low_Limit(50);
+  status = sensor.set_Temp_Low_Limit(50);
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error: set_Temp_High_Limit(). Stop!" );
+    while(1);
+  }
+  
   Serial.print("The temperature low limit is: ");
   Serial.println(sensor.get_Temp_Low_Limit());
   Serial.print("The low threshold temperature is: ");
-  Serial.println(sensor.get_Threshold_Low_Limit());
+  status = sensor.get_Threshold_Low_Limit();
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error: get_Threshold_Low_Limit(). Stop!" );
+    while(1);
+  }  
+  Serial.println(status);
+  
 }
 
 void loop()
 {
   // put your main code here, to run repeatedly:
 }
-

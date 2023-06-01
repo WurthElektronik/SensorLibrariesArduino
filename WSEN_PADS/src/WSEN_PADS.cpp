@@ -120,36 +120,84 @@ int Sensor_PADS::select_ODR()
 /**
    @brief   Perform the power-down 
 */
-void Sensor_PADS::power_down()
+int Sensor_PADS::power_down()
 {
   ODR = 0;
-  PADS_setBlockDataUpdate(PADS_enable);
-  PADS_setAutoIncrement(PADS_enable);
-  select_ODR();
+  
+  if (WE_FAIL == PADS_setBlockDataUpdate(PADS_enable))
+  {
+	  return WE_FAIL;
+  }
+  if (WE_FAIL == PADS_setAutoIncrement(PADS_enable))
+  {
+	  return WE_FAIL;
+  }
+   if (WE_FAIL == select_ODR())
+  {
+	  return WE_FAIL;
+  }
+  
+    return WE_SUCCESS;
 }
 
 /**
    @brief   Configure a software reset procedure
 */
-void Sensor_PADS::SW_RESET()
+int Sensor_PADS::SW_RESET()
 {
-  PADS_setSwreset(PADS_enable);
+   if (WE_FAIL == PADS_setSwreset(PADS_enable))
+   {
+	  return WE_FAIL;
+  }
+  return WE_SUCCESS;
 }
 
 /**
    @brief   Enable single data aquisition of temperature and pressure
 */
-void Sensor_PADS::oneshot()
+int Sensor_PADS::oneshot()
 {
-  PADS_setBlockDataUpdate(PADS_enable);
-  PADS_setAutoIncrement(PADS_enable);
-  PADS_setSingleConvMode(PADS_enable); // enable one shot bit
+  if (WE_FAIL == PADS_setBlockDataUpdate(PADS_enable))
+  {
+	  return WE_FAIL;
+  }
+  if (WE_FAIL == PADS_setAutoIncrement(PADS_enable))
+  {
+	  return WE_FAIL;
+  }
+  if (WE_FAIL == PADS_setSingleConvMode(PADS_enable)) // enable one shot bit
+  {
+	  return WE_FAIL;
+  }
 
   delay(5);
+  
+  return WE_SUCCESS;
 }
 
+
 /**
-   @brief   Check if new temperature measurement is available based on T_DA 
+   @brief   Check if new pressure measurement is available based on P_DA and T_DA
+   @retval  Error Code
+*/
+
+int Sensor_PADS::ready_to_read(PADS_state_t *stateTemperature, PADS_state_t *statePressure)
+{
+  int result = PADS_getStatusDrdy(stateTemperature, statePressure);
+  if(result == WE_FAIL) 
+  {
+    return WE_FAIL;
+  }
+  else
+  {
+    return WE_SUCCESS;
+  }  
+}
+
+
+/**
+   @brief   Check if new temperature measurement is available based on T_DA only!
+   This function must only be called when no pressure data shall be read. use ready_to_read if both temperature and pressure data shall be read.
    @retval  Error Code
 */
 
@@ -158,39 +206,50 @@ int Sensor_PADS::temp_ready_to_read()
   PADS_state_t state;
   int result = PADS_getTempStatus(&state);
 
-  if(result == WE_FAIL) { 
+  if(result == WE_FAIL) 
+  { 
     return WE_FAIL;
-  } else {
+  } 
+  else
+  {
     return state;
   }
 }
 
+
+
 /**
-   @brief   Check if new pressure measurement is available based on P_DA 
+   @brief   Check if new temperature measurement is available based on P_DA only!
+	This function must only be called when no temperature data shall be read. use ready_to_read if both temperature and pressure data shall be read.
    @retval  Error Code
 */
-
 int Sensor_PADS::pressure_ready_to_read()
 {
   PADS_state_t state;
   int result = PADS_getPresStatus(&state);
   
-  if(result == WE_FAIL) { 
+  if(result == WE_FAIL) 
+  {
     return WE_FAIL;
-  } else {
-    return state;
   }
-  
+  else
+  {
+    return state;
+  }  
 }
+
 
 /**
    @brief  Read and calculate the temperature
    @retval  temperature in float
 */
-float Sensor_PADS::read_temperature()
+int Sensor_PADS::read_temperature(float *temperature)
 {
   float float_temp;
-  PADS_getRAWTemperature(&rawTemp);
+  if (WE_FAIL == PADS_getRAWTemperature(&rawTemp))
+  {
+	return WE_FAIL;
+  }  
 
   if (rawTemp > 32767)
   {
@@ -202,28 +261,39 @@ float Sensor_PADS::read_temperature()
     float_temp = (float)rawTemp/100;
   }
 
-  return float_temp;
+  *temperature = float_temp;
+  
+  return WE_SUCCESS;
 }
 
 /**
    @brief  Read and calculate the pressure
    @retval pressure in float
 */
-float Sensor_PADS::read_pressure()
+int Sensor_PADS::read_pressure(float *pressure)
 {
   float float_pressure;
-  PADS_getPressure(&float_pressure);
-
-  return float_pressure;
+  if (WE_FAIL == PADS_getPressure(&float_pressure))
+  {
+	  return WE_FAIL;
+  }
+  
+  *pressure = float_pressure;   
+  return WE_SUCCESS;
 }
 
 /**
 * @brief  Set the power mode of the sensor [Low noise]
 * @retval Error code
 */
-void Sensor_PADS::set_low_noise_mode()
+int Sensor_PADS::set_low_noise_mode()
 {
-  PADS_setPowerMode(PADS_lowNoise);
+  if (WE_FAIL == PADS_setPowerMode(PADS_lowNoise))
+  {
+	  return WE_FAIL;
+  }
+  
+  return WE_SUCCESS;
 }
 
 /**
@@ -231,9 +301,14 @@ void Sensor_PADS::set_low_noise_mode()
 * @retval Error code
 */
 
-void Sensor_PADS::set_low_pass_configuration()
+int Sensor_PADS::set_low_pass_configuration()
 {
-  PADS_setLowPassFilterConf(lPfilterBW2);
+  if (WE_FAIL == PADS_setLowPassFilterConf(lPfilterBW2))
+  {
+	  return WE_FAIL;
+  }
+  
+  return WE_SUCCESS;
 }
 
 /**
@@ -241,49 +316,85 @@ void Sensor_PADS::set_low_pass_configuration()
 * @retval Error code
 */
 
-void Sensor_PADS::set_low_pass_filter()
+int Sensor_PADS::set_low_pass_filter()
 {
-  PADS_setLowPassFilter(PADS_enable);
+  if (WE_FAIL == PADS_setLowPassFilter(PADS_enable))
+    {
+	  return WE_FAIL;
+  }
+  
+  return WE_SUCCESS;
 }
 
 /**
    @brief   Performing a single measurement of temperature and pressure
 */
-void Sensor_PADS::set_single_conversion()
+int Sensor_PADS::set_single_conversion()
 {
-  power_down();
-  oneshot();
+  if (WE_FAIL == power_down())
+  {
+	 return WE_FAIL;
+  }
+  if (WE_FAIL == oneshot())
+  {
+	return WE_FAIL;
+  }
+  
+  return WE_SUCCESS;
+
 }
 
 /**
    @brief   Configuring  the sensor in the continuous mode 
             The measurement rate is defined by the user selectable ODR.
 */
-void Sensor_PADS::set_continuous_mode(int _ODR)
+int Sensor_PADS::set_continuous_mode(int _ODR)
 {
   ODR = _ODR;
-  set_low_noise_mode();
-  set_low_pass_configuration();
-  select_ODR();
+  if (WE_FAIL == set_low_noise_mode())
+  {
+	return WE_FAIL;
+  }
+  if (WE_FAIL == set_low_pass_configuration())
+  {
+	return WE_FAIL;
+  }
+  if (WE_FAIL == select_ODR())
+  {
+	return WE_FAIL;
+  }
+  
+  return WE_SUCCESS;
 }
 
 /**
    @brief   Set the FIFO mode
 */
-void Sensor_PADS::set_FIFO_mode(int fifoMode)
+int Sensor_PADS::set_FIFO_mode(int fifoMode)
 {
-  PADS_setFifoMode((PADS_fifo_mode_t)fifoMode);
+  if (WE_FAIL == PADS_setFifoMode((PADS_fifo_mode_t)fifoMode))
+  {
+	return WE_FAIL;
+  }
+  
+  return WE_SUCCESS;
 }
 
 /**
   @brief  Get the FIFO mode
   @retval Error code
 */
-int Sensor_PADS::get_FIFO_mode()
+int Sensor_PADS::get_FIFO_mode(int *mode)
 {
   PADS_fifo_mode_t fifoMode;
-  PADS_getFifoMode(&fifoMode);
-  return fifoMode;
+  if (WE_FAIL == PADS_getFifoMode(&fifoMode))
+  {
+	return WE_FAIL;
+  }
+  
+  *mode = fifoMode;
+  return WE_SUCCESS;
+
 }
 
 /**
@@ -291,11 +402,14 @@ int Sensor_PADS::get_FIFO_mode()
    @retval  temperature in float
 */
 
-float Sensor_PADS::read_FIFO_temperature()
+int Sensor_PADS::read_FIFO_temperature(float *temperature)
 {
   float float_temp;
 
-  PADS_getFifoRAWTemperature(&rawTemp);
+  if (WE_FAIL == PADS_getFifoRAWTemperature(&rawTemp))
+  {
+	return WE_FAIL;
+  }
 
   if (rawTemp > 32767)
   {
@@ -307,7 +421,8 @@ float Sensor_PADS::read_FIFO_temperature()
     float_temp = (float)rawTemp/100;
   }
 
-  return float_temp;
+  *temperature = float_temp;
+  return WE_SUCCESS;
 }
 
 /**
@@ -315,21 +430,28 @@ float Sensor_PADS::read_FIFO_temperature()
    @retval  pressure in kPa
 */
 
-float Sensor_PADS::read_FIFO_pressure()
+int Sensor_PADS::read_FIFO_pressure(float *pressure)
 {
   float float_pressure;
-  PADS_getFifoPressure(&float_pressure);
-
-  return float_pressure;
+  if (WE_FAIL == PADS_getFifoPressure(&float_pressure))
+  {
+	return WE_FAIL;
+  }
+  *pressure = float_pressure;
+  return WE_SUCCESS;
 }
 
 /**
    @brief  Read the fifo fill level
    @retval Error code
 */
-int Sensor_PADS::get_FIFO_fill_level()
+int Sensor_PADS::get_FIFO_fill_level(int *lvl)
 {
   uint8_t fifoLevel;
-  PADS_getFifoFillLevel(&fifoLevel);
-  return fifoLevel;
+  if (WE_FAIL == PADS_getFifoFillLevel(&fifoLevel))
+  {
+	return WE_FAIL;
+  }
+  *lvl = fifoLevel;
+  return WE_SUCCESS;
 }

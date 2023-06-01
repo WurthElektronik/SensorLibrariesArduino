@@ -18,7 +18,7 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2023 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
@@ -36,9 +36,20 @@ int deviceAddress = 0;
 
 int I2CInit(int address)
 {
-
+	uint32_t timeout = (uint32_t)(TIMEOUT_MS * 1000);  /* timeout in us */
+	bool reset_on_timeout = false;
+	
     deviceAddress = address;
+	Wire.setWireTimeout(timeout, reset_on_timeout);
     Wire.begin();
+	
+    return WE_SUCCESS;
+}
+
+
+int I2CDeInit(void)
+{
+    Wire.endTransmission(true);	/* end i2c transmission with stop = true, releasing the interface */
     return WE_SUCCESS;
 }
 
@@ -63,12 +74,21 @@ void I2CSetAddress(int address)
 
 int ReadReg(uint8_t RegAdr, int NumByteToRead, uint8_t *Data)
 {
+	if (0 == NumByteToRead)
+	{
+		return WE_FAIL;
+	}
 
     Wire.beginTransmission(deviceAddress);
     Wire.write(RegAdr);
-    unsigned long start = millis();
-    while (Wire.endTransmission() && millis() - start <= TIMEOUT);
-    int n = Wire.requestFrom(deviceAddress, NumByteToRead);
+	Wire.endTransmission();
+	
+    int n = Wire.requestFrom(deviceAddress, NumByteToRead);	
+	if (n != NumByteToRead) /* also includes: if n == 0 */
+	{
+		return WE_FAIL;
+	}
+	
     for (int i = 0; i < n; i++)
     {
         Data[i] = Wire.read();
@@ -88,16 +108,20 @@ int ReadReg(uint8_t RegAdr, int NumByteToRead, uint8_t *Data)
 int WriteReg(uint8_t RegAdr, int NumByteToWrite, uint8_t *Data)
 {
 
+	if (0 == NumByteToWrite)
+	{
+		return WE_FAIL;
+	}
+
     Wire.beginTransmission(deviceAddress);
     Wire.write(RegAdr);
- 
-    int n = Wire.requestFrom(deviceAddress, NumByteToWrite);
-    for (int i = 0; i < n; i++)
+	
+	for (int i = 0; i < NumByteToWrite; i++)
     {
-        Data[i] = Wire.write(*Data);
+        Wire.write(Data[i]);
     }
-    
-   if (Wire.endTransmission())
+	
+	if (Wire.endTransmission()) /* slave ack or nack */
     {
         return WE_FAIL;
     }
@@ -112,10 +136,15 @@ int WriteReg(uint8_t RegAdr, int NumByteToWrite, uint8_t *Data)
  * @retval Error Code
  */
 
-int I2C_read(uint8_t *data, int bytesToRead )
+int I2C_read(uint8_t *data, int bytesToRead)
 {
 	Wire.beginTransmission(deviceAddress);
-    Wire.requestFrom(deviceAddress, bytesToRead); // request Bytes
+    int n = Wire.requestFrom(deviceAddress, bytesToRead); // request Bytes
+	
+	if (n != bytesToRead) /* also includes: if n == 0 */
+	{
+		return WE_FAIL;
+	}	
 
 	for(int index = 0; index < bytesToRead; index++)
 	{

@@ -45,10 +45,11 @@ int Sensor_ISDS::get_DeviceID()
 {
     uint8_t devID;
 
-    if (ISDS_getDeviceID(&devID) == WE_SUCCESS)
+    if (WE_SUCCESS == ISDS_getDeviceID(&devID))
     {
         return devID;
     }
+	
     return WE_FAIL;
 }
 
@@ -62,67 +63,101 @@ int Sensor_ISDS::select_ODR(int ODR)
     {
         case 0:
         {
-            ISDS_setFifoOutputDataRate(ISDS_fifoOdrOff);
+            if (WE_FAIL == ISDS_setFifoOutputDataRate(ISDS_fifoOdrOff))
+				{
+        return WE_FAIL;
+    }
             break;
         }
 
         case 1:
         {
-            ISDS_setFifoOutputDataRate(ISDS_fifoOdr12Hz5);
+            if (WE_FAIL == ISDS_setFifoOutputDataRate(ISDS_fifoOdr12Hz5))
+				{
+        return WE_FAIL;
+    }
             break;
         }
 
         case 2:
         {
-            ISDS_setFifoOutputDataRate(ISDS_fifoOdr26Hz);
+            if (WE_FAIL == ISDS_setFifoOutputDataRate(ISDS_fifoOdr26Hz))
+				{
+        return WE_FAIL;
+    }
             break;
         }
 
         case 3:
         {
-            ISDS_setFifoOutputDataRate(ISDS_fifoOdr52Hz);
+            if (WE_FAIL == ISDS_setFifoOutputDataRate(ISDS_fifoOdr52Hz))
+				{
+        return WE_FAIL;
+    }
             break;
         }
 
         case 4:
         {
-            ISDS_setFifoOutputDataRate(ISDS_fifoOdr104Hz);
+            if (WE_FAIL == ISDS_setFifoOutputDataRate(ISDS_fifoOdr104Hz))
+				{
+        return WE_FAIL;
+    }
             break;
         }
 
         case 5:
         {
-            ISDS_setFifoOutputDataRate(ISDS_fifoOdr208Hz);
+            if (WE_FAIL == ISDS_setFifoOutputDataRate(ISDS_fifoOdr208Hz))
+				{
+        return WE_FAIL;
+    }
             break;
         }
 
         case 6:
         {
-            ISDS_setFifoOutputDataRate(ISDS_fifoOdr416Hz);
+            if (WE_FAIL == ISDS_setFifoOutputDataRate(ISDS_fifoOdr416Hz))
+				{
+        return WE_FAIL;
+    }
             break;
         }
 
         case 7:
         {
-            ISDS_setFifoOutputDataRate(ISDS_fifoOdr833Hz);
+            if (WE_FAIL == ISDS_setFifoOutputDataRate(ISDS_fifoOdr833Hz))
+				{
+        return WE_FAIL;
+    }
             break;
         }
 
         case 8:
         {
-            ISDS_setFifoOutputDataRate(ISDS_fifoOdr1k66Hz);
+            if (WE_FAIL == ISDS_setFifoOutputDataRate(ISDS_fifoOdr1k66Hz))
+				
+				{
+        return WE_FAIL;
+    }
             break;
         }
 
         case 9:
         {
-            ISDS_setFifoOutputDataRate(ISDS_fifoOdr3k33Hz);
+            if (WE_FAIL == ISDS_setFifoOutputDataRate(ISDS_fifoOdr3k33Hz))
+				{
+        return WE_FAIL;
+    }
             break;
         }
 
         case 10:
         {
-            ISDS_setFifoOutputDataRate(ISDS_fifoOdr6k66Hz);
+            if (WE_FAIL == ISDS_setFifoOutputDataRate(ISDS_fifoOdr6k66Hz))
+				{
+        return WE_FAIL;
+    }
             break;
         }
 
@@ -137,65 +172,132 @@ int Sensor_ISDS::select_ODR(int ODR)
 /**
    @brief   Perform the power-down 
 */
-void Sensor_ISDS::power_down()
+int Sensor_ISDS::power_down()
 {
-    ISDS_enableBlockDataUpdate(ISDS_disable);
-    ISDS_setAccOutputDataRate(ISDS_accOdrOff);
-    ISDS_setGyroOutputDataRate(ISDS_gyroOdrOff);
+    if (WE_FAIL == ISDS_enableBlockDataUpdate(ISDS_disable))
+	{
+        return WE_FAIL;
+    }
+    if (WE_FAIL == ISDS_setAccOutputDataRate(ISDS_accOdrOff))
+	{
+        return WE_FAIL;
+    }
+    if (WE_FAIL == ISDS_setGyroOutputDataRate(ISDS_gyroOdrOff))
+	{
+        return WE_FAIL;
+    }
+	
+	return WE_SUCCESS;
 }
 
 /**
    @brief   Configure a software reset procedure
 */
-void Sensor_ISDS::SW_RESET()
+int Sensor_ISDS::SW_RESET()
 {
-    ISDS_softReset(ISDS_enable);
+    if (WE_FAIL == ISDS_softReset(ISDS_enable))
+	{
+        return WE_FAIL;
+    }
+	
+	return WE_SUCCESS;
 }
 
 /**
    @brief   Set the mode (high performance, normal or low power)
 */
-void Sensor_ISDS::set_Mode(int mode)
+int Sensor_ISDS::set_Mode(int mode)
 {
-    ISDS_enableBlockDataUpdate(ISDS_enable);
-    ISDS_enableAutoIncrement(ISDS_enable);
+    if (WE_FAIL == ISDS_enableBlockDataUpdate(ISDS_enable))
+	{
+        return WE_FAIL;
+    }
+    if (WE_FAIL == ISDS_enableAutoIncrement(ISDS_enable))
+	{
+        return WE_FAIL;
+    }
     
     /* Accelerometer 16g range */
-    ISDS_setAccFullScale(ISDS_accFullScaleSixteenG);
+    if (WE_FAIL == ISDS_setAccFullScale(ISDS_accFullScaleSixteenG))
+	{
+        return WE_FAIL;
+    }
 
     /* Gyroscope 2000 dps range */
-    ISDS_setGyroFullScale(ISDS_gyroFullScale2000dps);
+    if (WE_FAIL == ISDS_setGyroFullScale(ISDS_gyroFullScale2000dps))
+	{
+        return WE_FAIL;
+    }
 
     switch (mode)
     {
         case 2://high performance
         {
-            ISDS_setAccOutputDataRate(ISDS_accOdr208Hz);
-            ISDS_setGyroOutputDataRate(ISDS_gyroOdr208Hz);
-            ISDS_disableAccHighPerformanceMode(ISDS_disable);
-            ISDS_disableGyroHighPerformanceMode(ISDS_disable);
-            break;   
+            if (WE_FAIL == ISDS_setAccOutputDataRate(ISDS_accOdr208Hz))
+			{
+				return WE_FAIL;
+			}
+			if (WE_FAIL == ISDS_setGyroOutputDataRate(ISDS_gyroOdr208Hz))
+			{
+				return WE_FAIL;
+			}
+			if (WE_FAIL == ISDS_disableAccHighPerformanceMode(ISDS_disable))
+			{
+				return WE_FAIL;
+			}
+			if (WE_FAIL == ISDS_disableGyroHighPerformanceMode(ISDS_disable))
+			{
+				return WE_FAIL;
+			}
+			break;   
         }
 
         case 1://normal
         {
-            ISDS_setAccOutputDataRate(ISDS_accOdr208Hz);
-            ISDS_setGyroOutputDataRate(ISDS_gyroOdr208Hz);
-            ISDS_disableAccHighPerformanceMode(ISDS_enable);
-            ISDS_disableGyroHighPerformanceMode(ISDS_enable);
+            if (WE_FAIL == ISDS_setAccOutputDataRate(ISDS_accOdr208Hz))
+			{
+				return WE_FAIL;
+			}
+			if (WE_FAIL == ISDS_setGyroOutputDataRate(ISDS_gyroOdr208Hz))
+			{
+				return WE_FAIL;
+			}
+			if (WE_FAIL == ISDS_disableAccHighPerformanceMode(ISDS_enable))
+			{
+				return WE_FAIL;
+			}
+			if (WE_FAIL == ISDS_disableGyroHighPerformanceMode(ISDS_enable))
+			{
+				return WE_FAIL;
+			}
             break;   
-        }
+		}
+        
 
         case 0://low power
         default:
         {
-            ISDS_setAccOutputDataRate(ISDS_accOdr52Hz);
-            ISDS_setGyroOutputDataRate(ISDS_gyroOdr52Hz);
-            ISDS_disableAccHighPerformanceMode(ISDS_enable);
-            ISDS_disableGyroHighPerformanceMode(ISDS_enable);
-            break;
+            if (WE_FAIL == ISDS_setAccOutputDataRate(ISDS_accOdr52Hz))
+			{
+				return WE_FAIL;
+			}
+			if (WE_FAIL == ISDS_setGyroOutputDataRate(ISDS_gyroOdr52Hz))
+			{
+				return WE_FAIL;
+			}
+			if (WE_FAIL == ISDS_disableAccHighPerformanceMode(ISDS_enable))
+			{
+				return WE_FAIL;
+			}
+			if (WE_FAIL == ISDS_disableGyroHighPerformanceMode(ISDS_enable))
+			{
+				return WE_FAIL;
+			}
+			break;
         }
     }
+	
+	return WE_SUCCESS;
 }
 
 /**
@@ -238,57 +340,77 @@ int Sensor_ISDS::is_Gyro_Ready_To_Read()
 */
 int Sensor_ISDS::is_Temp_Ready()
 {
-    ISDS_state_t tempDrdy;
-    if (WE_FAIL == ISDS_isTemperatureDataReady(&tempDrdy))
+    ISDS_state_t drdy;
+    if (WE_FAIL == ISDS_isTemperatureDataReady(&drdy))
     {
         return WE_FAIL;
     }
     else
     {
-        return tempDrdy;
+        return drdy;
     }
 }
+
+int Sensor_ISDS::get_StatusRegister(ISDS_status_t *status)
+{
+
+    if (WE_FAIL == ISDS_getStatusRegister(status))
+    {
+        return WE_FAIL;
+    }
+    else
+    {
+        return WE_SUCCESS;
+    }
+}
+
 
 /**
    @brief  Calculate the acceleration along the X-axis 
    @retval Acceleration in mg
 */
-int16_t Sensor_ISDS::get_acceleration_X()
+int Sensor_ISDS::get_acceleration_X(int16_t *acc_x)
 {
     int16_t val;
-    if (ISDS_getAccelerationX_int(&val) != WE_SUCCESS)
+    if (WE_FAIL == ISDS_getAccelerationX_int(&val))
     {
-        val = 0;
+        return WE_FAIL;
     }
-    return val;
+	
+    *acc_x = val;
+	return WE_SUCCESS;
 }
 
 /**
    @brief  Calculate the acceleration along the Y-axis 
    @retval Acceleration in mg
 */
-int16_t Sensor_ISDS::get_acceleration_Y()
+int Sensor_ISDS::get_acceleration_Y(int16_t *acc_y)
 {
     int16_t val;
-    if (ISDS_getAccelerationY_int(&val) != WE_SUCCESS)
+    if (WE_FAIL == ISDS_getAccelerationY_int(&val))
     {
-        val = 0;
+        return WE_FAIL;
     }
-    return val;
+	
+    *acc_y = val;
+	return WE_SUCCESS;
 }
 
 /**
    @brief  Calculate the acceleration along the Z-axis 
    @retval Acceleration in mg
 */
-int16_t Sensor_ISDS::get_acceleration_Z()
+int Sensor_ISDS::get_acceleration_Z(int16_t *acc_z)
 {
     int16_t val;
-    if (ISDS_getAccelerationZ_int(&val) != WE_SUCCESS)
+    if (WE_FAIL == ISDS_getAccelerationZ_int(&val))
     {
-        val = 0;
+        return WE_FAIL;
     }
-    return val;
+	
+    *acc_z = val;
+	return WE_SUCCESS;
 }
 
 /**
@@ -300,11 +422,8 @@ int16_t Sensor_ISDS::get_acceleration_Z()
 */
 int Sensor_ISDS::get_accelerations(int16_t* X, int16_t* Y, int16_t* Z)
 {
-    if (ISDS_getAccelerations_int(X,Y,Z) == WE_FAIL)
+    if (WE_FAIL == ISDS_getAccelerations_int(X,Y,Z))
     {
-        *X = 0;
-        *Y = 0;
-        *Z = 0;
         return WE_FAIL;
     }
     return WE_SUCCESS;
@@ -314,45 +433,51 @@ int Sensor_ISDS::get_accelerations(int16_t* X, int16_t* Y, int16_t* Z)
    @brief  Calculate the angular along the X-axis 
    @retval X-axis angular rate in [mdps]
 */
-int32_t Sensor_ISDS::get_angular_rate_X()
+int Sensor_ISDS::get_angular_rate_X(int32_t *rate_x)
 {
     int32_t val = 0;
     /* Read gyroscope values (alternatively use ISDS_getAngularRates_int() to get values for all three axes in one go) */
-    if (ISDS_getAngularRateX_int(&val) != WE_SUCCESS)
+    if (WE_FAIL == ISDS_getAngularRateX_int(&val))
     {
-        val = 0;
+        return WE_FAIL;
     }
-    return val;
+    *rate_x = val;
+	return WE_SUCCESS;
 }
 
 /**
    @brief  Calculate the angular along the Y-axis 
    @retval y-axis angular rate in [mdps]
 */
-int32_t Sensor_ISDS::get_angular_rate_Y()
+int Sensor_ISDS::get_angular_rate_Y(int32_t *rate_y)
 {
     int32_t val = 0;
     /* Read gyroscope values (alternatively use ISDS_getAngularRates_int() to get values for all three axes in one go) */
-    if (ISDS_getAngularRateY_int(&val) != WE_SUCCESS)
+    if (WE_FAIL == ISDS_getAngularRateY_int(&val))
     {
-        val = 0;
+        return WE_FAIL;
     }
-    return val;
+	
+    *rate_y = val;
+	return WE_SUCCESS;
 }
 
 /**
    @brief  Calculate the angular along the Z-axis 
    @retval z-axis angular rate in [mdps]
 */
-int32_t Sensor_ISDS::get_angular_rate_Z()
+int Sensor_ISDS::get_angular_rate_Z(int32_t *rate_z)
 {
     int32_t val = 0;
     /* Read gyroscope values (alternatively use ISDS_getAngularRates_int() to get values for all three axes in one go) */
-    if (ISDS_getAngularRateZ_int(&val) != WE_SUCCESS)
+    if (WE_FAIL == ISDS_getAngularRateZ_int(&val))
     {
-        val = 0;
+        return WE_FAIL;
     }
-    return val;
+	
+    *rate_z = val;
+	return WE_SUCCESS;
+
 }
 
 /**
@@ -366,11 +491,9 @@ int Sensor_ISDS::get_angular_rates(int32_t* X, int32_t* Y, int32_t* Z)
 {
     if (ISDS_getAngularRates_int(X,Y,Z) == WE_FAIL)
     {
-        *X = 0;
-        *Y = 0;
-        *Z = 0;
         return WE_FAIL;
     }
+	
     return WE_SUCCESS;
 }
 
@@ -378,15 +501,16 @@ int Sensor_ISDS::get_angular_rates(int32_t* X, int32_t* Y, int32_t* Z)
    @brief  Calculate the temperature;
    @retval Temperature in [°C]
 */
-float Sensor_ISDS::get_temperature()
+int Sensor_ISDS::get_temperature(float *temp)
 {
     int16_t val = 0;
-    if (ISDS_getTemperature_int(&val) != WE_SUCCESS)
+    if (WE_FAIL == ISDS_getTemperature_int(&val))
     {
-        val = 0;
+        return WE_FAIL;
     }
 
     float f = (float)val;
-    return f/100.;
+	*temp = f/100.0f;
+	return WE_SUCCESS;
 }
 

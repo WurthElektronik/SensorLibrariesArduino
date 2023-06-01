@@ -42,40 +42,67 @@
 #include "WSEN_PADS.h"
 
 Sensor_PADS sensor;
+int status;
+
 
 void setup()
 {
-  delay(5000);
+
+  PADS_state_t stateTemperature;
+  PADS_state_t statePressure;
+  
+  delay(1000);
   Serial.begin(9600);
 
   // Initialize the I2C interface
   sensor.init(PADS_ADDRESS_I2C_1);
 
   // Set single conversion mode
-  sensor.set_single_conversion();
-
-  // Check if sensor is ready to measure the temperature
-  if (sensor.temp_ready_to_read() & sensor.pressure_ready_to_read())
+  if (WE_FAIL == sensor.set_single_conversion())
   {
-    // Read and calculate the temperature
-    float myTemperature = sensor.read_temperature();
-    Serial.print("The temperature is: ");
+    Serial.print("Error: set_single_conversion(). STOP!");
+    while(1);
+  }
 
-    // Print the temperature on the serial monitor
-    Serial.print(myTemperature);
-    Serial.println(" Celsius");
-
-    // Read and calculate the pressure
-    float myPressure = sensor.read_pressure();
-    Serial.print("The pressure is: ");
-
-    // Print the temperature on the serial monitor in kPa
-    Serial.print(myPressure);
-    Serial.println(" kPa");
+  status = sensor.ready_to_read(&stateTemperature, &statePressure);
+  if (WE_FAIL == status)
+  {
+    Serial.print("Error: Sensor DRDY temperature not readable.");
+  }
+  else if (0 == stateTemperature)
+  {
+   Serial.print("Error: temperature DRDY = 0.");
   }
   else
   {
-    Serial.print("Sensor is not ready.");
+  
+    // Read and calculate the temperature
+    float temperature;
+    sensor.read_temperature(&temperature);
+  
+    Serial.print("temperature: ");
+  
+    // Print the temperature on the serial monitor
+    Serial.print(temperature);
+    Serial.println(" degC");
+  
+  }
+
+  if (0 == statePressure)
+  {
+    Serial.print("Error: pressure DRDY = 0.");
+  }
+  else
+  {
+    // Read and calculate the pressure
+    float pressure;
+    sensor.read_pressure(&pressure);
+  
+    Serial.print("pressure: ");
+  
+    // Print the pressure on the serial monitor
+    Serial.print(pressure);
+    Serial.println(" kPa");
   }
 }
 
@@ -83,4 +110,3 @@ void loop()
 {
   // put your main code here, to run iteratively
 }
-

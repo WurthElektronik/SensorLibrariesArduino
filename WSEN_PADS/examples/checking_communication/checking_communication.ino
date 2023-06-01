@@ -47,6 +47,13 @@ void setup() {
 
   // Get the device ID for this sensor
   int sensor_ID = sensor.get_DeviceID();
+  if (WE_FAIL == sensor_ID)
+  {
+    Serial.println("No communication with the device! STOP!");
+    while(1);  
+    /* note: check i2c address and hw setup! */
+  }
+  
   Serial.print("Sensor ID: ");
 
   // Print the device ID in hexadecimal on the serial monitor

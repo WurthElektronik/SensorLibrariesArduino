@@ -42,30 +42,48 @@
 #include "WSEN_TIDS.h"
 
 Sensor_TIDS sensor;
+int status;
 
 //The Output Data Rate in Hz
 int ODR = 25;
 
 void setup()
 {
-
+  delay(1000);
   Serial.begin(9600);
 
   // Initialize the I2C interface
   sensor.init(TIDS_ADDRESS_I2C_1);
 
   //Perform a software reset
-  sensor.SW_RESET();
+  status = sensor.SW_RESET();
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error: SW_RESET(). STOP!");
+    while(1);
+  }
 
   // Set the free run mode with given ODR
-  sensor.set_continuous_mode(ODR);
+  status = sensor.set_continuous_mode(ODR);
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error: set_continuous_mode(). STOP!");
+    while(1);
+  }
 }
 
 void loop()
 {
 
   // Read and calculate the temperature
-  float temperature = sensor.read_temperature();
+  float temperature; 
+  
+  status = sensor.read_temperature(&temperature);
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error: read_temperature(). STOP!");
+    while(1);
+  }
 
   // Print the temperature on the serial monitor
   Serial.print(temperature);

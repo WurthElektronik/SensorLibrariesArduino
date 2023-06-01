@@ -480,7 +480,8 @@ typedef enum {
 	int8_t PADS_getPressureOverrunStatus(PADS_state_t *state);
 	/* Temperature and Pressure data available State */
 	int8_t PADS_getTempStatus(PADS_state_t *state);
-	int8_t PADS_getPresStatus(PADS_state_t *state);
+	int8_t PADS_getPresStatus(PADS_state_t *state);	
+	int8_t PADS_getStatusDrdy(PADS_state_t *stateDrdyTemperature, PADS_state_t *stateDrdyPressure);
 
 	/* standard Data Out */
 	int8_t PADS_getRAWPressure(uint32_t *rawPres);

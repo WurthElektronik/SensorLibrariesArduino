@@ -26,8 +26,7 @@
 #ifndef ARDUINOPLATFORM_H
 #define ARDUINOPLATFORM_H
 
-
-#define TIMEOUT 1000
+#define TIMEOUT_MS (uint16_t)100		/* 100ms */
 
 /**         Includes         **/
 

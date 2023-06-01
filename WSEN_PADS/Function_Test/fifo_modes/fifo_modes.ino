@@ -30,6 +30,7 @@ Sensor_PADS sensor;
 
 //The Output Data Rate in Hz
 int ODR = 25;
+ int mode;
 
 void setup()
 {
@@ -40,18 +41,42 @@ void setup()
   sensor.init(PADS_ADDRESS_I2C_1);
 
   // FIFO in the Continous Mode (Mode 2)
-  sensor.set_FIFO_mode(2);
+  if (WE_FAIL == sensor.set_FIFO_mode(2))
+  {
+    Serial.print("error: set_FIFO_mode(2). STOP!");
+    while(1);
+  }
+  
   Serial.print("The FIFO is in the Mode ");
-  Serial.println(sensor.get_FIFO_mode());
+
+if (WE_FAIL == sensor.get_FIFO_mode(&mode))
+    {
+    Serial.print("error: get_FIFO_mode(). STOP!");
+    while(1);
+  }
+  Serial.println(mode);
 
   // Before changing the mode to FIFO mode set the bypass mode first
-  sensor.set_FIFO_mode(0); // Bypass 
-  sensor.set_FIFO_mode(1); // FIFO
+  if (WE_FAIL == sensor.set_FIFO_mode(0)) // Bypass 
+      {
+    Serial.print("error: set_FIFO_mode(0). STOP!");
+    while(1);
+  }
+  if (WE_FAIL == sensor.set_FIFO_mode(1)) // FIFO
+      {
+    Serial.print("error: set_FIFO_mode(1). STOP!");
+    while(1);
+  }
   Serial.print("The FIFO is in the Mode ");
-  Serial.println(sensor.get_FIFO_mode());
+ 
+  if (WE_FAIL == sensor.get_FIFO_mode(&mode))
+    {
+    Serial.print("error: get_FIFO_mode(). STOP!");
+    while(1);
+  }
+  Serial.println(mode);
 }
 
 void loop()
 {
 }
-

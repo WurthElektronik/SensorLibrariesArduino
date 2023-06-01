@@ -35,27 +35,29 @@ public:
     int init(int address);
     int get_DeviceID();
 
-    void power_down();
-    void SW_RESET();
-    void oneshot();
-    int temp_ready_to_read();
-    int pressure_ready_to_read();
+    int power_down();
+    int SW_RESET();
+    int oneshot();
+	
+    int ready_to_read(PADS_state_t *stateTemperature, PADS_state_t *statePressure);
+	int Sensor_PADS::temp_ready_to_read();
+	int Sensor_PADS::pressure_ready_to_read();
 
-    float read_temperature();
-    float read_pressure();
+    int read_temperature(float *temperature);
+    int read_pressure(float *presure);
 
-    void set_low_noise_mode();
-    void set_low_pass_filter();
-    void set_low_pass_configuration();
+    int set_low_noise_mode();
+    int set_low_pass_filter();
+    int set_low_pass_configuration();
 
-    void set_single_conversion();
-    void set_continuous_mode(int ODR);
+    int set_single_conversion();
+    int set_continuous_mode(int ODR);
 
-    void set_FIFO_mode(int fifoMode);
-    int get_FIFO_mode();
-    float read_FIFO_temperature();
-    float read_FIFO_pressure();
-    int get_FIFO_fill_level();
+    int set_FIFO_mode(int fifoMode);
+    int get_FIFO_mode(int *mode);
+    int read_FIFO_temperature(float *temperature);
+    int read_FIFO_pressure(float *presure);
+    int get_FIFO_fill_level(int *lvl);
 
     int ODR;
 

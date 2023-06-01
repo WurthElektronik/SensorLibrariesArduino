@@ -468,6 +468,40 @@ int8_t HIDS_getTempStatus(HIDS_state_t *temp_state)
 }
 
 /**
+* @brief Read the Data availability for temeprature and humidity. Since these values get reset to '0' after reading status register, both bits need to be requested in read procedure.
+* @param  Pointer to the temperature Data availability state
+* @retval Error code
+*/
+int8_t HIDS_getStatusDrdy(HIDS_state_t *temp_state, HIDS_state_t *humidity_state)
+{
+	uint8_t status_reg;
+	if (ReadReg((uint8_t)HIDS_STATUS_REG, 1, (uint8_t *)&status_reg))
+	{		
+		return WE_FAIL;
+	}
+
+	if ((status_reg & 0x01) == 0x01)
+	{
+		*temp_state = HIDS_enable;
+	}
+	else
+	{
+		*temp_state = HIDS_disable; /* '0' */
+	}
+	
+	if ((status_reg & 0x02) == 0x02)
+	{
+		*humidity_state = HIDS_enable;
+	}
+	else
+	{
+		*humidity_state = HIDS_disable; /* '0' */
+	}
+	
+	return WE_SUCCESS;
+}
+
+/**
 * @brief  Read the temperature and humidity raw values
 * @param  Pointer to rawHumidity and  rawTemp
 * @retval Error code

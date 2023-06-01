@@ -130,60 +130,125 @@ int Sensor_ITDS::select_ODR()
 /**
    @brief   Perform the power-down 
 */
-void Sensor_ITDS::power_down()
+int Sensor_ITDS::power_down()
 {
     ODR = 0;
-    ITDS_setBlockDataUpdate(ITDS_enable);
-    ITDS_setAutoIncrement(ITDS_enable);
-    select_ODR();
+    if (WE_FAIL == ITDS_setBlockDataUpdate(ITDS_enable))
+	{
+		return WE_FAIL;
+	}
+	if (WE_FAIL == ITDS_setAutoIncrement(ITDS_enable))
+	{
+		return WE_FAIL;
+	}
+	if (WE_FAIL == select_ODR())
+	{
+		return WE_FAIL;
+	}
+	
+	return WE_SUCCESS;
 }
 
 /**
    @brief   Configure a software reset procedure
 */
-void Sensor_ITDS::SW_RESET()
+int Sensor_ITDS::SW_RESET()
 {
-    ITDS_softReset(ITDS_enable);
+    if (WE_FAIL == ITDS_softReset(ITDS_enable))
+	{
+		return WE_FAIL;
+	}
+	
+	return WE_SUCCESS;
 }
 
 /**
    @brief   Set the high performance mode
 */
-void Sensor_ITDS::set_High_Performance()
+int Sensor_ITDS::set_High_Performance()
 {
-    ITDS_setBlockDataUpdate(ITDS_enable);
-    ITDS_setAutoIncrement(ITDS_enable);
-    select_ODR();
+    if (WE_FAIL == ITDS_setBlockDataUpdate(ITDS_enable))
+	{
+		return WE_FAIL;
+	}
+    if (WE_FAIL == ITDS_setAutoIncrement(ITDS_enable))
+	{
+		return WE_FAIL;
+	}
+    if (WE_FAIL == select_ODR())
+	{
+		return WE_FAIL;
+	}
     mode = ITDS_normalMode;
 
-    ITDS_setOperatingMode(highPerformance);
+    if (WE_FAIL == ITDS_setOperatingMode(highPerformance))
+	{
+		return WE_FAIL;
+	}
+	
+	return WE_SUCCESS;
 }
 
 /**
    @brief   Set the low mode 
 */
-void Sensor_ITDS::set_Low_Mode()
+int Sensor_ITDS::set_Low_Mode()
 {
-    ITDS_setBlockDataUpdate(ITDS_enable);
-    ITDS_setAutoIncrement(ITDS_enable);
-    select_ODR();
+    if (WE_FAIL == ITDS_setBlockDataUpdate(ITDS_enable))
+	{
+		return WE_FAIL;
+	}
+    if (WE_FAIL == ITDS_setAutoIncrement(ITDS_enable))
+	{
+		return WE_FAIL;
+	}
+    if (WE_FAIL == select_ODR())
+	{
+		return WE_FAIL;
+	}
     mode = ITDS_lowPower;
-    ITDS_setOperatingMode(normalOrLowPower);
-    ITDS_setpowerMode(ITDS_lowPower);
+	
+     if (WE_FAIL == ITDS_setOperatingMode(normalOrLowPower))
+	{
+		return WE_FAIL;
+	}
+	if (WE_FAIL == ITDS_setpowerMode(ITDS_lowPower))
+	{
+		return WE_FAIL;
+	}
+	
+	return WE_SUCCESS;
 }
 
 /**
    @brief   Set the normal mode 
 */
-void Sensor_ITDS::set_Normal_Mode()
+int Sensor_ITDS::set_Normal_Mode()
 {
-
-    ITDS_setBlockDataUpdate(ITDS_enable);
-    ITDS_setAutoIncrement(ITDS_enable);
-    select_ODR();
+    if (WE_FAIL == ITDS_setBlockDataUpdate(ITDS_enable))
+	{
+		return WE_FAIL;
+	}
+    if (WE_FAIL == ITDS_setAutoIncrement(ITDS_enable))
+	{
+		return WE_FAIL;
+	}
+    if (WE_FAIL == select_ODR())
+	{
+		return WE_FAIL;
+	}
     mode = ITDS_normalMode;
-    ITDS_setOperatingMode(normalOrLowPower);
-    ITDS_setpowerMode(ITDS_normalMode);
+	
+    if (WE_FAIL == ITDS_setOperatingMode(normalOrLowPower))
+	{
+		return WE_FAIL;
+	}
+    if (WE_FAIL == ITDS_setpowerMode(ITDS_normalMode))
+	{
+		return WE_FAIL;
+	}
+	
+	return WE_SUCCESS;
 }
 
 /**
@@ -193,8 +258,12 @@ void Sensor_ITDS::set_Normal_Mode()
 int Sensor_ITDS::get_Operating_Mode()
 {
     uint8_t opmode;
-    ITDS_getOperatingMode(&opmode);
-    return opmode;
+    if (WE_FAIL == ITDS_getOperatingMode(&opmode))
+	{
+		return WE_FAIL;
+	}
+	
+    return (int)opmode;
 }
 
 /**
@@ -204,41 +273,61 @@ int Sensor_ITDS::get_Operating_Mode()
 int Sensor_ITDS::get_Power_Mode()
 {
     uint8_t powermode;
-    ITDS_getpowerMode(&powermode);
-    return powermode;
+    if (WE_FAIL == ITDS_getpowerMode(&powermode))
+	{
+		return WE_FAIL;
+	}
+    return (int)powermode;
 }
 
 /**
    @brief   Select the acceleration bandwidth for the filtering path
 */
-void Sensor_ITDS::set_Bandwidth(int value)
+int Sensor_ITDS::set_Bandwidth(int value)
 {
-    ITDS_setFilteringCutoff((ITDS_bandwidth)value);
+    if (WE_FAIL == ITDS_setFilteringCutoff((ITDS_bandwidth)value))
+	{
+		return WE_FAIL;
+	}
+	return WE_SUCCESS;
 }
 
 /**
    @brief   Set the full scale
 */
-void Sensor_ITDS::set_Full_Scale(int value)
+int Sensor_ITDS::set_Full_Scale(int value)
 {
     full_scale = (ITDS_full_Scale)value;
-    ITDS_setFullScale(full_scale);
+    if (WE_FAIL == ITDS_setFullScale(full_scale))
+	{
+		return WE_FAIL;
+	}
+	
+	return WE_SUCCESS;
 }
 
 /**
    @brief   Set the low pass filter
 */
-void Sensor_ITDS::set_Low_Pass_Filter()
+int Sensor_ITDS::set_Low_Pass_Filter()
 {
-    ITDS_setfilterPath(lowPass);
+    if (WE_FAIL == ITDS_setfilterPath(lowPass))
+	{
+		return WE_FAIL;
+	}
+	return WE_SUCCESS;
 }
 
 /**
    @brief   Set the high pass filter
 */
-void Sensor_ITDS::set_High_Pass_Filter()
+int Sensor_ITDS::set_High_Pass_Filter()
 {
-    ITDS_setfilterPath(highPass);
+    if (WE_FAIL == ITDS_setfilterPath(highPass))
+	{
+		return WE_FAIL;
+	}
+	return WE_SUCCESS;
 }
 
 /**
@@ -248,53 +337,22 @@ void Sensor_ITDS::set_High_Pass_Filter()
 
 float Sensor_ITDS::get_Sensitivity()
 {
-    const int isLowPower = (get_Operating_Mode() == normalOrLowPower) & (get_Power_Mode() == ITDS_lowPower);
-
+	/* these factors include already handling of 10 vs. 12 bit resolution and bit shifting */
     if (full_scale == twoG)
     {
-
-        if (isLowPower)
-        {
-            return 0.976;
-        }
-        else
-        {
-            return 0.244;
-        }
+		return 0.061f;
     }
     else if (full_scale == fourG)
-    {
-        if (isLowPower)
-        {
-            return 1.952;
-        }
-        else
-        {
-            return 0.488;
-        }
+    {       
+		return 0.122f;
     }
     else if (full_scale == eightG)
-    {
-        if (isLowPower)
-        {
-            return 3.904;
-        }
-        else
-        {
-            return 0.976;
-        }
+    {       
+		return 0.244f;
     }
     else if (full_scale == sixteenG)
     {
-
-        if (isLowPower)
-        {
-            return 7.808;
-        }
-        else
-        {
-            return 1.952;
-        }
+		return 0.488f;
     }
     return 0;
 }
@@ -341,75 +399,66 @@ int Sensor_ITDS::is_Temp_Ready()
    @brief  Calculate the acceleration along the X-axis 
    @retval Acceleration in mg
 */
-float Sensor_ITDS::get_acceleration_X()
+int Sensor_ITDS::get_acceleration_X(float *acc_x)
 {
     int16_t XRawAcc;
-    ITDS_getRawAccelerationX(&XRawAcc);
-    int XShift = 0;
-    if (mode == ITDS_lowPower)
-    {
-        XShift = XRawAcc / 16;
-    }
-    else
-    {
-        XShift = XRawAcc / 4;
-    }
-
-    float XAcc = XShift * get_Sensitivity();
-    return XAcc;
+    if (WE_FAIL == ITDS_getRawAccelerationX(&XRawAcc))
+	{
+		return WE_FAIL;
+	}
+	
+    float XAcc = XRawAcc * get_Sensitivity();
+	*acc_x = XAcc;
+    return WE_SUCCESS;
 }
 
 /**
    @brief  Calculate the acceleration along the Y-axis 
    @retval Acceleration in mg
 */
-float Sensor_ITDS::get_acceleration_Y()
+int Sensor_ITDS::get_acceleration_Y(float *acc_y)
 {
     int16_t YRawAcc;
-    ITDS_getRawAccelerationY(&YRawAcc);
-    int YShift = 0;
-    if (mode == ITDS_lowPower)
-    {
-        YShift = YRawAcc / 16;
-    }
-    else
-    {
-        YShift = YRawAcc / 4;
-    }
-    float YAcc = YShift * get_Sensitivity();
-    return YAcc;
+    if (WE_FAIL == ITDS_getRawAccelerationY(&YRawAcc))
+		{
+		return WE_FAIL;
+	}
+
+    float YAcc = YRawAcc * get_Sensitivity();
+	*acc_y = YAcc;
+    return WE_SUCCESS;
 }
 
 /**
    @brief  Calculate the acceleration along the Z-axis 
    @retval Acceleration in mg
 */
-float Sensor_ITDS::get_acceleration_Z()
+int Sensor_ITDS::get_acceleration_Z(float *acc_z)
 {
     int16_t ZRawAcc;
-    ITDS_getRawAccelerationZ(&ZRawAcc);
-    int ZShift = 0;
-    if (mode == ITDS_lowPower)
-    {
-        ZShift = ZRawAcc / 16;
-    }
-    else
-    {
-        ZShift = ZRawAcc / 4;
-    }
-    float ZAcc = ZShift * get_Sensitivity();
-    return ZAcc;
+    if (WE_FAIL == ITDS_getRawAccelerationZ(&ZRawAcc))
+		{
+		return WE_FAIL;
+	}
+
+    float ZAcc = ZRawAcc * get_Sensitivity();
+	*acc_z = ZAcc;
+    return WE_SUCCESS;
 }
 
 /**
    @brief  Calculate the temperature; Formulas according Table 26
    @retval Temperature in °C
 */
-int Sensor_ITDS::get_temperature()
+int Sensor_ITDS::get_temperature(int *temperature)
 {
     uint8_t RawTemp8;
-    ITDS_getTemperature8bit(&RawTemp8);
-    int Temp;
+	int Temp;
+	
+    if (WE_FAIL == ITDS_getTemperature8bit(&RawTemp8))
+	{
+		return WE_FAIL;
+	}
 
     if (RawTemp8 > 0 && RawTemp8 <= 0x36)
     {
@@ -420,48 +469,72 @@ int Sensor_ITDS::get_temperature()
         Temp = -255 + (int)RawTemp8 + 25;
     }
 
-    return Temp;
+	*temperature = Temp;
+    return WE_SUCCESS;
 }
 
 /**
    @brief  Calculate the temperature in Fahrenheit
    @retval Temperature in Fahrenheit
 */
-int Sensor_ITDS::get_temp_Fahrenheit()
+int Sensor_ITDS::get_temp_Fahrenheit(int *temperature)
 {
-    int temp_Celsius = get_temperature();
-    int temp_Fahrenheit = temp_Celsius * 1.8 + 32;
-    return temp_Fahrenheit;
+    int temp_Celsius;
+	if (WE_FAIL == get_temperature(&temp_Celsius))
+	{
+		return WE_FAIL;
+	}
+	
+    int temp_Fahrenheit = temp_Celsius * 1.8 + 32;	
+	*temperature = temp_Fahrenheit;
+    return WE_SUCCESS;
 }
 
 /**
    @brief   Set the FIFO mode
 */
 
-void Sensor_ITDS::set_FIFO_mode(int fifoMode)
+int Sensor_ITDS::set_FIFO_mode(int fifoMode)
 {
-    ITDS_setFifoMode((ITDS_Fifo_Mode)fifoMode);
-    select_ODR();
+    if (WE_FAIL == ITDS_setFifoMode((ITDS_Fifo_Mode)fifoMode))
+	{
+		return WE_FAIL;
+	}
+    if (WE_FAIL == select_ODR())
+	{
+		return WE_FAIL;
+	}
+	return WE_SUCCESS;
 }
 
 /**
   @brief  Get the FIFO mode
   @retval Error code
 */
-int Sensor_ITDS::get_FIFO_mode()
+int Sensor_ITDS::get_FIFO_mode(int *mode)
 {
     ITDS_Fifo_Mode fifoMode;
-    ITDS_getFifoMode(&fifoMode);
-    return fifoMode;
+    if (WE_FAIL == ITDS_getFifoMode(&fifoMode))
+	{
+		return WE_FAIL;
+	}
+	
+	*mode = fifoMode;
+    return WE_SUCCESS;
 }
 
 /**
   @brief  Get the FIFO fill level
   @retval Error code
 */
-int Sensor_ITDS::get_FIFO_Fill_Level()
+int Sensor_ITDS::get_FIFO_Fill_Level(int *lvl)
 {
     uint8_t fifoFill;
-    ITDS_getFifoFillLevel(&fifoFill);
-    return fifoFill;
+    if (WE_FAIL == ITDS_getFifoFillLevel(&fifoFill))
+	{
+		return WE_FAIL;
+	}
+	
+	*lvl = fifoFill;
+    return  WE_SUCCESS;
 }

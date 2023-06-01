@@ -41,22 +41,29 @@ Sensor_PDUS sensor;
 
 void setup()
 {
-
-    Serial.begin(9600);
+  delay(1000);
+  Serial.begin(9600);
 
     // Initialize the I2C interface
     sensor.init(PDUS_ADDRESS_I2C);
 	
 	delay(10);
 
-
 }
+
+
 void loop()
 {
-    float presskPa, tempDeg;
+    float presskPa;
+    float tempDeg;
 
-	// Calculate the pressure and temperature
-    sensor.getPresAndTemp(pdus3, &presskPa, &tempDeg);
+	/* Calculate the pressure and temperature  */
+	/* #warning: "use the correct PDUS_Sensor_Type as paramter to achieve correct conversion factor." */
+    if (WE_FAIL == sensor.getPresAndTemp(pdus3, &presskPa, &tempDeg))
+    {
+      Serial.println("Error: getPresAndTemp. Stop!");
+      while(1);
+    }
 
     // Print the results on the serial monitor
     Serial.println("Pressure is:");
@@ -65,4 +72,3 @@ void loop()
     Serial.println(tempDeg);
 	delay(1000);
 }
-

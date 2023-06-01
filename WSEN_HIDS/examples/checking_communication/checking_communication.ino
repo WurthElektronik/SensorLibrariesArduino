@@ -46,8 +46,14 @@ void setup() {
 
   // Get the device ID for this sensor
   int sensor_ID = sensor.get_DeviceID();
+  if (WE_FAIL == sensor_ID)
+  {
+    Serial.println("Error: get_DeviceID(). STOP!");
+    while(1);    
+    /* check i2c address and/or physical connection */
+  }
+  
   Serial.print("Sensor ID: ");
-
   // Print the device ID in hexadecimal on the serial monitor
   Serial.print(sensor_ID, HEX);
   Serial.println();
@@ -63,7 +69,8 @@ void setup() {
 
 }
 
-void loop() {
+void loop() 
+{
   // put your main code here, to run repeatedly:
 
 }

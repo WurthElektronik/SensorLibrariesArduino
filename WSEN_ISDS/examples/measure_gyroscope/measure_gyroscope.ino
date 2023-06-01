@@ -42,9 +42,11 @@
 #include "WSEN_ISDS.h"
 
 Sensor_ISDS sensor;
+int status;
 
 void setup()
 {
+
 
   Serial.begin(9600);
 
@@ -52,40 +54,82 @@ void setup()
   sensor.init(ISDS_ADDRESS_I2C_1);
 
   // Reset sensor
-  sensor.SW_RESET();
-  
+  status = sensor.SW_RESET();
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error:  SW_RESET(). Stop!");
+    while(1);  
+  }
+
   // Set FIFO ODR to 26Hz
-  sensor.select_ODR(2);
+  status = sensor.select_ODR(2);
+  if (WE_FAIL == status)
+    {
+    Serial.println("Error:  select_ODR(). Stop!");
+    while(1);  
+  }
 
   // Set high performance mode
-  sensor.set_Mode(2);
+  status = sensor.set_Mode(2);
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error:  set_Mode(). Stop!");
+    while(1);  
+  }
 
 }
 
 void loop()
 {
-  if (ISDS_enable == sensor.is_Gyro_Ready_To_Read())
+  status = sensor.is_Gyro_Ready_To_Read();
+ if (WE_FAIL == status)
+  {
+    Serial.println("Error: is_Gyro_Ready_To_Read(). Stop!");
+    while(1);
+  } 
+  else if (1 == status)
   {
     int32_t gyro_X;
     int32_t gyro_Y;
     int32_t gyro_Z;
-    #if 0
+#if 0
     // Get X-axis angular rate in [mdps]
-    gyro_X = sensor.get_angular_rate_X();
+   
+    status = sensor.get_angular_rate_X(&gyro_X);
+    if (WE_FAIL == status)
+    {
+    Serial.println("Error:  get_angular_rate_X(). Stop!");
+    while(1);  
+  }
     Serial.println("Angular rate in X axis in [mdps]: ");
     Serial.println(gyro_X);
 
     // Get Y-axis angular rate in [mdps]
-    gyro_Y = sensor.get_angular_rate_Y();
+    status = sensor.get_angular_rate_Y(&gyro_Y);
+    if (WE_FAIL == status)
+    {
+    Serial.println("Error:  get_angular_rate_Y(). Stop!");
+    while(1);  
+  }
     Serial.println("Angular rate in  Y axis in [mdps]: ");
     Serial.println(gyro_Y);
 
     // Get Z-axis angular rate in [mdps]
-    gyro_Z = sensor.get_angular_rate_Z();
+    status = sensor.get_angular_rate_Z(&gyro_Z);
+    if (WE_FAIL == status)
+    {
+    Serial.println("Error:  get_angular_rate_Z(). Stop!");
+    while(1);  
+  }
     Serial.println("Angular rate in  Z axis in [mdps]: ");
     Serial.println(gyro_Z);
-    #else
-    sensor.get_angular_rates(&gyro_X,&gyro_Y,&gyro_Z);
+#else
+    status = sensor.get_angular_rates(&gyro_X,&gyro_Y,&gyro_Z);
+    if (WE_FAIL == status)
+    {
+    Serial.println("Error:  get_angular_rates(). Stop!");
+    while(1);  
+  }
     Serial.println("Angular rate in X,Y,Z axis in [mdps]: ");
     Serial.print(gyro_X);
     Serial.print(" ");
@@ -93,7 +137,7 @@ void loop()
     Serial.print(" ");
     Serial.print(gyro_Z);
     Serial.println(" ");
-    #endif
+#endif
   }
   else
   {

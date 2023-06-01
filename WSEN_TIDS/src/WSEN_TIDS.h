@@ -18,7 +18,7 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2023 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
@@ -35,25 +35,26 @@ public:
     int init(int address);
     int get_DeviceID();
 
-    void power_down();
-    void oneshot();
+    int power_down();
+    int oneshot();
 
-    void SW_RESET();
-    int get_SW_RESET();
+    int SW_RESET();
+    int get_SW_RESET(int *rst);
     
-    float read_temperature();
-    float read_temp_fahrenheit();
+    int read_temperature(float *temp);
+    int read_temp_fahrenheit(float *temp);
 
-    void set_single_conversion();
+    int set_single_conversion();
+	
     int is_ready_to_read();
-    void set_continuous_mode(int ODR);
-
-    void set_Temp_High_Limit(uint8_t T_H_Limit);
-    int get_Temp_High_Limit();
-    float get_Threshold_High_Limit();
-    void set_Temp_Low_Limit(uint8_t T_L_Limit);
-    int get_Temp_Low_Limit();
-    float get_Threshold_Low_Limit();
+	
+    int set_continuous_mode(int ODR);
+    int set_Temp_High_Limit(uint8_t T_H_Limit);
+	int set_Temp_Low_Limit(uint8_t T_L_Limit);
+    int get_Temp_High_Limit(uint8_t *limit);
+    int get_Temp_Low_Limit(uint8_t *limit);
+	int get_Threshold_High_Limit(float *temp);
+    int get_Threshold_Low_Limit(float *temp);
 
     int ODR;
 
@@ -61,7 +62,6 @@ private:
     
     uint16_t rawTemp;
     float T_neg;
-
     int Select_ODR();
     
 };

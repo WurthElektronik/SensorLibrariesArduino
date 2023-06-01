@@ -39,18 +39,22 @@ int Sensor_PDUS::init(int address)
 
 /**
 * @brief  Read the raw pressure and temperature   
-* @retval Digital values
+* @retval raw values
 */
  int Sensor_PDUS::get_RawPresAndTemp(uint16_t *rawPres, uint16_t *rawTemp)
  {
     uint8_t data[4] = {0, 0, 0, 0};
 
-    I2C_read(data, 4); // bytesToRead = 4
+	// bytesToRead = 4, 2 byte pressure followed by 2 byte temperature
+    if (WE_FAIL == I2C_read(data, 4)) 
+	{
+		return WE_FAIL;
+	}
 
-    *rawPres = data[0]<<8; 
+    *rawPres = data[0] << 8; /* high byte of raw pressure value */
     *rawPres |= data[1];
 
-    *rawTemp = data[2]<<8;
+    *rawTemp = data[2] << 8; /* high byte of raw temperature value */
     *rawTemp |= data[3];
 
     return WE_SUCCESS;
@@ -67,43 +71,42 @@ int Sensor_PDUS::init(int address)
 */
 int Sensor_PDUS::getPresAndTemp(PDUS_Sensor_Type typ, float *presskPa, float *tempDeg)
 { 
-  uint16_t rawPres = 0;
-  
-  uint16_t rawTemp = 0;
-  
-  float temporary = 0;
+  uint16_t rawPres = 0;  
+  uint16_t rawTemp = 0;  
+  float temporary = 0.0f;
 
-  get_RawPresAndTemp(&rawPres, &rawTemp);
-
+  if (WE_FAIL == get_RawPresAndTemp(&rawPres, &rawTemp))
+  {
+	  return WE_FAIL;
+  }
   
   /* calculate Temperature */
   temporary = (float)(rawTemp) - T_MIN_VAL_PDUS;
-  *tempDeg = ((temporary * 4.272) / (1000));
-
+  *tempDeg = ((temporary * 4.272f) / (1000));
 
   /* calculate Pressure */
-  /* perform conversion regarding sensor sub-type */
+  /* perform conversion regarding sensor sub-type ref: PDUS_Sensor_Type */
   switch (typ)
   {
   case pdus0:
     temporary = rawPres - P_MIN_VAL_PDUS;
-    *presskPa = (((float)temporary * 7.63) / (1000000)) - 0.1;
+    *presskPa = (((float)temporary * 7.63f) / (1000000)) - 0.1f;
     break;
   case pdus1:
     temporary = rawPres - P_MIN_VAL_PDUS;
-    *presskPa = (((float)temporary * 7.63) / (100000)) - 1;
+    *presskPa = (((float)temporary * 7.63f) / (100000)) - 1;
     break;
   case pdus2:
     temporary = rawPres - P_MIN_VAL_PDUS;
-    *presskPa = (((float)temporary * 7.63) / (10000)) - 10;
+    *presskPa = (((float)temporary * 7.63f) / (10000)) - 10;
     break;
   case pdus3:
     temporary = rawPres - P_MIN_VAL_PDUS;
-    *presskPa = (((float)temporary * 3.815) / (1000));
+    *presskPa = (((float)temporary * 3.815f) / (1000));
     break;
   case pdus4:
     temporary = rawPres - P_MIN_VAL_PDUS;
-    *presskPa = (((float)temporary * 4.196) / (100)) -100;
+    *presskPa = (((float)temporary * 4.196f) / (100)) - 100;
     break;
   default:
     return WE_FAIL;

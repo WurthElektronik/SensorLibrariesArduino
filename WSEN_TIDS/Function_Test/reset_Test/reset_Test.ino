@@ -36,6 +36,7 @@
 #include "WSEN_TIDS.h"
 
 Sensor_TIDS sensor;
+int status;
 
 void setup()
 {
@@ -46,14 +47,26 @@ void setup()
   sensor.init(TIDS_ADDRESS_I2C_1);
 
   // Configure a whole reset procedure -> disable software reset at the end
-  sensor.SW_RESET();
+  if (WE_FAIL == sensor.SW_RESET())
+  {
+    Serial.println("Error: get_SW_RESET(). STOP!");
+    while(1);  
+  }
 
   // Success = 0
-  Serial.println(sensor.get_SW_RESET());
+  int rst;
+  status = sensor.get_SW_RESET(&rst);
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error: get_SW_RESET(). STOP!");
+    while(1);  
+  }
+
+  Serial.println(status);
+  
 }
 
 void loop()
 {
   // put your main code here, to run repeatedly:
 }
-

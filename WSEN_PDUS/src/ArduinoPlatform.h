@@ -18,7 +18,7 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2023 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
@@ -26,8 +26,7 @@
 #ifndef ARDUINOPLATFORM_H
 #define ARDUINOPLATFORM_H
 
-
-#define TIMEOUT 1000
+#define TIMEOUT_MS (uint16_t)100		/* 100ms */
 
 /**         Includes         **/
 

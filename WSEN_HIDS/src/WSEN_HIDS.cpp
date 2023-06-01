@@ -49,6 +49,7 @@ int Sensor_HIDS::get_DeviceID()
     {
         return devID;
     }
+	
     return WE_FAIL;
 }
 
@@ -58,29 +59,30 @@ int Sensor_HIDS::get_DeviceID()
 */
 int Sensor_HIDS::select_ODR()
 {
+	int status = WE_FAIL;
     switch (ODR)
     {
         case 0:
         {
-            HIDS_setOdr(oneShot);
+            status = HIDS_setOdr(oneShot);
             break;
         }
 
         case 1:
         {
-            HIDS_setOdr(odr1HZ);
+            status = HIDS_setOdr(odr1HZ);
             break;
         }
 
         case 2:
         {
-            HIDS_setOdr(odr7HZ);
+            status = HIDS_setOdr(odr7HZ);
             break;
         }
 
         case 3:
         {
-            HIDS_setOdr(odr12_5HZ);
+            status = HIDS_setOdr(odr12_5HZ);
             break;
         }
 
@@ -89,6 +91,12 @@ int Sensor_HIDS::select_ODR()
             return WE_FAIL;
         }
     }
+	
+	if (WE_FAIL == status)
+	{
+		return WE_FAIL;
+	}
+	
     return WE_SUCCESS;
 
 }
@@ -195,42 +203,78 @@ uint16_t Sensor_HIDS::get_T1_OUT()
 uint16_t Sensor_HIDS::get_T0_OUT()
 {
 	uint16_t T0_OUT = 0;
-	T0_OUT= HIDS_get_T0_OUT();
+	T0_OUT = HIDS_get_T0_OUT();
 	return T0_OUT;
 }
 /**
-* @brief Read the temperature Data availability
+* @brief Read the temperature Data availability. Data ready.
+* @param  Pointer to the temperature Data availability state and humidity Data availability state.
+* @retval Error code
+*/
+int Sensor_HIDS::get_StatusDrdy(HIDS_state_t *temp_drdy, HIDS_state_t *humidity_drdy)
+{
+
+	if (WE_FAIL == HIDS_getStatusDrdy(temp_drdy, humidity_drdy))
+	{
+		return WE_FAIL;
+	}	
+
+	return WE_SUCCESS;
+}
+
+
+/**
+* @brief Read the temperature Data availability. Data ready.
 * @param  Pointer to the temperature Data availability state
 * @retval Error code
 */
-int8_t Sensor_HIDS::get_TempStatus()
-{
-	HIDS_state_t temp_state ;
-	HIDS_getTempStatus(&temp_state);
-	return temp_state ;
+int Sensor_HIDS::get_TempStatus()
+{	
+	HIDS_state_t temp_state;
+    if (WE_FAIL == HIDS_getTempStatus(&temp_state))
+	{
+		return WE_FAIL;
+	}
+	else
+	{
+		return (int)temp_state;
+	}
 }
+
 /**
-* @brief Read the Humidity Data availability
-* @param  Pointer to the Humidity Data availability state
+* @brief Read the humidity Data availability. Data ready.
+* @param  Pointer to the humidity Data availability state
 * @retval Error code
 */
-int8_t Sensor_HIDS::get_HumStatus() 
-{
+int Sensor_HIDS::get_HumStatus()
+{	
 	HIDS_state_t humidity_state;
-	HIDS_getHumStatus(&humidity_state);
-	return humidity_state ;
+    if (WE_FAIL == HIDS_getHumStatus(&humidity_state))
+	{
+		return WE_FAIL;
+	}
+	else
+	{
+		return (int)humidity_state;
+	}
 }
+
 
 /**
  * @brief  Read the Humidity data
  * @param  no parameter.
  * @retval error code
  */
-float Sensor_HIDS::get_Humidity()
+int Sensor_HIDS::get_Humidity(float *relHum)
 {
-	float humidity ;
-	HIDS_getHumidity(&humidity);
-	return humidity ;
+	float humidity;
+	if (WE_FAIL == HIDS_getHumidity(&humidity))
+	{
+		return WE_FAIL;
+	}
+
+	*relHum = humidity;
+	return WE_SUCCESS;
 }
 
 /**
@@ -238,11 +282,16 @@ float Sensor_HIDS::get_Humidity()
  * @param  no parameter.
  * @retval Temperature in °C
  */
-float Sensor_HIDS::get_Temperature()
+int Sensor_HIDS::get_Temperature(float *temperature)
 {
-	float temperature ;
-	HIDS_getTemperature(&temperature);
-	return temperature ;
+	float temp;
+	if (WE_FAIL == HIDS_getTemperature(&temp))
+	{
+		return WE_FAIL;
+	}
+	
+	*temperature = temp;
+	return WE_SUCCESS;
 }
 
 /**
@@ -250,12 +299,21 @@ float Sensor_HIDS::get_Temperature()
  * @param  no parameter.
  * @retval none
  */
-void Sensor_HIDS::set_single_conversion()
+int Sensor_HIDS::set_single_conversion()
 {
     HIDS_state_t oneShot = HIDS_enable;
     ODR = 0;
-    select_ODR();
-    HIDS_enOneShot(oneShot);
+    if (WE_FAIL == select_ODR())
+	{
+		return WE_FAIL;
+	}	
+	
+    if (WE_FAIL == HIDS_enOneShot(oneShot))
+	{
+		return WE_FAIL;
+	}		
+	
+	return WE_SUCCESS;
 }
 
 /**
@@ -263,11 +321,22 @@ void Sensor_HIDS::set_single_conversion()
  * @param  no parameter.
  * @retval none
  */   
-void Sensor_HIDS::set_continuous_mode(int outputDataRate)
+int Sensor_HIDS::set_continuous_mode(int outputDataRate)
 {
     //Enable block data update
-    HIDS_setBdu(HIDS_enable);
+    if (WE_FAIL == HIDS_setBdu(HIDS_enable))
+	{
+		return WE_FAIL;
+	}	
     ODR = outputDataRate;
-    select_ODR();
-    HIDS_setPowerMode(activeMode);
+    if (WE_FAIL == select_ODR())
+	{
+		return WE_FAIL;
+	}	
+    if (WE_FAIL == HIDS_setPowerMode(activeMode))
+		{
+		return WE_FAIL;
+	}		
+	
+	return WE_SUCCESS;
 }

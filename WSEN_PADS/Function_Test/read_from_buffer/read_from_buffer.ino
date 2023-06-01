@@ -51,7 +51,12 @@ void setup()
   sensor.init(PADS_ADDRESS_I2C_1);
 
   // Set the continous mode 2
-  sensor.set_FIFO_mode(2);
+  if (WE_FAIL == sensor.set_FIFO_mode(2))
+  {
+    Serial.println("set_FIFO_mode() failed. STOP!");
+    while(1);
+  }
+  
 }
 
 void loop()
@@ -59,16 +64,26 @@ void loop()
   Serial.println("Temperature: ");
 
   // Calculate the temperature and print it on the serial monitor
-  Serial.print(sensor.read_FIFO_temperature());
+  float temperature;
+  sensor.read_FIFO_temperature(&temperature);  
+  Serial.print("Temperature deg. C: ");
+  Serial.println(temperature);
+  
 
   // Calculate the temperature and print it on the serial monitor
-  Serial.println("Pressure: ");
-  Serial.print(sensor.read_FIFO_pressure());
+  Serial.print("Pressure: ");
+  float pressure;
+  sensor.read_FIFO_pressure(&pressure);
+  Serial.println(pressure);
 
   Serial.print("fill level:");
 
   // Get the number of data sets stored in the FIFO
-  Serial.println(sensor.get_FIFO_fill_level());
+  int level;
+  sensor.get_FIFO_fill_level(&level);
+  Serial.println(level);
+
+  
   Serial.println("-------");
 
   // Waiting time between measurement
@@ -77,4 +92,3 @@ void loop()
   // Wait before continuing with the next measurement
   delay(1000 / ODR);
 }
-

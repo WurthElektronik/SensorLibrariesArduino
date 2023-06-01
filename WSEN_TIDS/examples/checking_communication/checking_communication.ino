@@ -46,6 +46,12 @@ void setup() {
 
   // Get the device ID for this sensor
   int sensor_ID = sensor.get_DeviceID();
+  if (WE_FAIL == sensor_ID)
+  {
+    Serial.println("Error: get_DeviceID(). STOP!");
+    while(1);  
+  }
+  
   Serial.print("Sensor ID: ");
 
   // Print the device ID in hexadecimal on the serial monitor
@@ -56,7 +62,8 @@ void setup() {
   if (sensor_ID == TIDS_DEVICE_ID_VALUE)
   {
     Serial.println("Communication successfull !");
-  } else
+  } 
+  else
   {
     Serial.println("No communication with the device !");
   }

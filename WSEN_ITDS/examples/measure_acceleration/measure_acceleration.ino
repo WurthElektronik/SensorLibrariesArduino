@@ -42,47 +42,91 @@
 #include "WSEN_ITDS.h"
 
 Sensor_ITDS sensor;
+int status;
 
 void setup()
 {
 
+  delay(5000);
   Serial.begin(9600);
 
   // Initialize the I2C interface
   sensor.init(ITDS_ADDRESS_I2C_1);
 
-  // Sensor in power down mode
-  sensor.power_down();
-
   //The Output Data Rate mode 6 (200hz)
   sensor.ODR = 6;
 
   // Set high performance mode
-  sensor.set_High_Performance();
+  status = 0;
+  status = sensor.set_High_Performance();
+  if (status == WE_FAIL)
+  {
+    Serial.println("Sensor config failed. high performance. STOP.");
+    while(1);    
+  }
 
   // Set the full scale to 16g
-  sensor.set_Full_Scale(3);
+  status = 0;
+  status = sensor.set_Full_Scale(3);
+  if (status == WE_FAIL)
+  {
+    Serial.println("Sensor config failed. Full scale. STOP.");
+    while(1);    
+  }
 
 }
 
 void loop()
 {
-    if (sensor.is_Ready_To_Read())
-  {
-    // Get acceleration along X axis in mg
-    float acc_X = sensor.get_acceleration_X();
-    Serial.println("Acceleration along X axis: ");
-    Serial.println(acc_X);
+    status = 0;
+    status = sensor.is_Ready_To_Read();
 
-    // Get acceleration along Y axis in mg
-    float acc_Y = sensor.get_acceleration_Y();
-    Serial.println("Acceleration along Y axis: ");
-    Serial.println(acc_Y);
-
-    // Get acceleration along Z axis in mg
-    float acc_Z = sensor.get_acceleration_Z();
-    Serial.println("Acceleration along Z axis: ");
-    Serial.println(acc_Z);
+    if (WE_FAIL == status)
+    {
+      Serial.println("Sensor DRDY bit read error. STOP.");
+      while(1);
+    }
+  
+    if (ITDS_enable == status)
+    {
+      // Get acceleration along X axis in mg
+      float acc_X = 0.0f;
+      if (WE_FAIL == sensor.get_acceleration_X(&acc_X))
+      {
+        Serial.println("Sensor read error at acc x. STOP.");
+        while(1);
+      }
+      else
+      {   
+        Serial.println("Acceleration along X axis: ");
+        Serial.println(acc_X);
+      }
+  
+      float acc_Y = 0.0f;
+      // Get acceleration along Y axis in mg1
+          if (WE_FAIL == sensor.get_acceleration_Y(&acc_Y))
+      {
+        Serial.println("Sensor read error at acc y. STOP.");
+        while(1);
+      }
+      else
+      {   
+        Serial.println("Acceleration along Y axis: ");
+        Serial.println(acc_Y);
+      }
+  
+      // Get acceleration along Z axis in mg
+      float acc_Z = 0.0f;
+      if (WE_FAIL == sensor.get_acceleration_Z(&acc_Z))
+      {
+        Serial.println("Sensor read error at acc z. STOP.");
+        while(1);
+      }
+      else
+      {
+        Serial.println("Acceleration along Z axis: ");
+        Serial.println(acc_Z);
+      }
   }
   else
   {

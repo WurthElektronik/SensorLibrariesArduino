@@ -43,10 +43,11 @@ Sensor_HIDS sensor;
 
 //The Output Data Rate in Hz
 int ODR = 1;
+int status;
 
 void setup()
 {
-  delay(5000);
+  delay(1000);
   
   Serial.begin(9600);
 
@@ -54,20 +55,68 @@ void setup()
   sensor.init(HIDS_ADDRESS_I2C_0);
 
   //The Output Data Rate One shot mode
-  sensor.set_continuous_mode(ODR);
+  if (WE_FAIL == sensor.set_continuous_mode(ODR))
+  {
+  Serial.println("Error: set_continuous_mode(). STOP!");
+    while(1);  
+  }
 }
 
 void loop()
 {
+  HIDS_state_t temp_drdy;
+  HIDS_state_t humidity_drdy;
 
-  Serial.print("The humidity is: ");
-  //Print the humidity value on the serial monitor
-  Serial.print(sensor.get_Humidity());
-  Serial.println(" %");
+  status = sensor.get_StatusDrdy(&temp_drdy, &humidity_drdy);
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error: get_StatusDrdy(). STOP!");
+    while(1);
+  }
+  else 
+  {
+    if (0 == humidity_drdy)  
+    {
+      Serial.println("Sensor is not ready.");
+    }
+    else
+    {
+      
+      //Print the humidity value on the serial monitor
+      float rh;
+      if (WE_FAIL == sensor.get_Humidity(&rh))
+      {
+        Serial.println("Error: get_Humidity(). STOP!");
+        while(1);
+      }
+      else
+      {
+        Serial.print("The humidity is: ");
+        Serial.print(rh);
+        Serial.println(" %");
+      }
+    }
 
-  Serial.print("The temperature is: ");
-  Serial.print(sensor.get_Temperature());
-  Serial.println(" degC");
+    if (0 == temp_drdy)
+    {
+      Serial.println("Sensor is not ready.");
+    }
+    else
+    {
+      float temperature;
+      if (WE_FAIL == sensor.get_Temperature(&temperature))
+      {
+        Serial.println("Error: get_Temperature. STOP!");
+        while(1);
+      }
+      else
+      {
+        Serial.print("The temperature is: ");
+        Serial.print(temperature);
+        Serial.println(" degC");
+      }
+    }   
+  }
 
   // Waiting time between measurement
   int waitMillis = 1000 / ODR;

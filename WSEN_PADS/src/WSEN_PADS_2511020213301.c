@@ -673,6 +673,37 @@ int8_t PADS_getPresStatus(PADS_state_t *state)
 	return WE_SUCCESS;
 }
 
+
+int8_t PADS_getStatusDrdy(PADS_state_t *stateDrdyTemperature, PADS_state_t *stateDrdyPressure)
+{
+	uint8_t status_reg;		
+	
+	if (ReadReg((uint8_t)PADS_STATUS_REG, 1, (uint8_t *)&status_reg))
+	{		
+		return WE_FAIL;
+	}
+	
+	if ((status_reg & 0x01) == 0x01)
+	{
+		*stateDrdyPressure = PADS_enable;
+	}
+	else
+	{
+		*stateDrdyPressure = PADS_disable; /* '0' */
+	}
+
+	if ((status_reg & 0x02) == 0x02)
+	{
+		*stateDrdyTemperature = PADS_enable;
+	}
+	else
+	{
+		*stateDrdyTemperature = PADS_disable; /* '0' */
+	}
+	
+	return WE_SUCCESS;
+}
+
 /**
 * @brief  Check if the temperature data register has been overwritten
 * @param  Pointer to temperature overwritten State

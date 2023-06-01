@@ -18,7 +18,7 @@
  * FOR MORE INFORMATION PLEASE CAREFULLY READ THE LICENSE AGREEMENT FILE LOCATED
  * IN THE ROOT DIRECTORY OF THIS DRIVER PACKAGE.
  *
- * COPYRIGHT (c) 2019 Würth Elektronik eiSos GmbH & Co. KG
+ * COPYRIGHT (c) 2023 Würth Elektronik eiSos GmbH & Co. KG
  *
  ***************************************************************************************************
  **/
@@ -34,32 +34,32 @@ class Sensor_ITDS
 public:
     int init(int address);
     int get_DeviceID();
-    void power_down();
-    void SW_RESET();
+    int power_down();
+    int SW_RESET();
 
-    void set_High_Performance();
-    void set_Low_Mode();
-    void set_Normal_Mode();
+    int set_High_Performance();
+    int set_Low_Mode();
+    int set_Normal_Mode();
     int get_Operating_Mode();
     int get_Power_Mode();
 
-    void set_Bandwidth(int value);
-    void set_Full_Scale(int value);
-    void set_Low_Pass_Filter();
-    void set_High_Pass_Filter();
+    int set_Bandwidth(int value);
+    int set_Full_Scale(int value);
+    int set_Low_Pass_Filter();
+    int set_High_Pass_Filter();
 
     float get_Sensitivity();
     int is_Ready_To_Read();
     int is_Temp_Ready();
-    float get_acceleration_X();
-    float get_acceleration_Y();
-    float get_acceleration_Z();
-    int get_temperature();
-    int get_temp_Fahrenheit();
+    int get_acceleration_X(float *acc_x);
+    int get_acceleration_Y(float *acc_y);
+    int get_acceleration_Z(float *acc_z);
+    int get_temperature(int *temperature);
+    int get_temp_Fahrenheit(int *temperature);
 
-    void set_FIFO_mode(int fifoMode);
-    int get_FIFO_mode();
-    int get_FIFO_Fill_Level();
+    int set_FIFO_mode(int fifoMode);
+    int get_FIFO_mode(int *mode);
+    int get_FIFO_Fill_Level(int *lvl);
 
     int ODR;
     int select_ODR();

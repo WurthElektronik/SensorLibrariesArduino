@@ -42,6 +42,7 @@
 #include "WSEN_ISDS.h"
 
 Sensor_ISDS sensor;
+int status;
 
 void setup()
 {
@@ -52,41 +53,83 @@ void setup()
   sensor.init(ISDS_ADDRESS_I2C_1);
 
   // Reset sensor
-  sensor.SW_RESET();
+  status = sensor.SW_RESET();
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error:  SW_RESET(). Stop!");
+    while(1);  
+  }
 
   // Set FIFO ODR to 26Hz
-  sensor.select_ODR(2);
+  status = sensor.select_ODR(2);
+  if (WE_FAIL == status)
+    {
+    Serial.println("Error:  select_ODR(). Stop!");
+    while(1);  
+  }
 
   // Set high performance mode
-  sensor.set_Mode(2);
-
+  status = sensor.set_Mode(2);
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error:  set_Mode(). Stop!");
+    while(1);  
+  }
 }
 
 void loop()
 {
-  if (ISDS_enable == sensor.is_ACC_Ready_To_Read())
-  {    
+
+  status = sensor.is_ACC_Ready_To_Read();
+  if (WE_FAIL == status)
+  {
+    Serial.println("Error: is_ACC_Ready_To_Read(). Stop!");
+    while(1);
+  } 
+  else if (1 == status)
+  {
     int16_t acc_X;
     int16_t acc_Y;
     int16_t acc_Z;
 
-    #if 0
+#if 0
     // Get acceleration along X axis in mg
-    acc_X = sensor.get_acceleration_X();
+   status = sensor.get_acceleration_X(&acc_X);
+   if (WE_FAIL == status)
+  {
+    Serial.println("Error:  get_acceleration_X(). Stop!");
+    while(1);  
+  }
     Serial.println("Acceleration along X axis in [mg]: ");
     Serial.println(acc_X);
 
     // Get acceleration along Y axis in mg
-    acc_Y = sensor.get_acceleration_Y();
+    status = sensor.get_acceleration_Y(&acc_Y);
+    if (WE_FAIL == status)
+  {
+    Serial.println("Error:  get_accel(). Stop!");
+    while(1);  
+  }
     Serial.println("Acceleration along Y axis in [mg]: ");
     Serial.println(acc_Y);
 
     // Get acceleration along Z axis in mg
-    acc_Z = sensor.get_acceleration_Z();
+    status = sensor.get_acceleration_Z(&acc_Z);
+    if (WE_FAIL == status)
+  {
+    Serial.println("Error:  get_acceleration_Z(). Stop!");
+    while(1);  
+  }
     Serial.println("Acceleration along Z axis in [mg]: ");
     Serial.println(acc_Z);
-    #else
-    sensor.get_accelerations(&acc_X,&acc_Y,&acc_Z);
+#else
+    
+    status = sensor.get_accelerations(&acc_X,&acc_Y,&acc_Z);
+    if (WE_FAIL == status)
+  {
+    Serial.println("Error:  get_accelerations(). Stop!");
+    while(1);  
+  }
     Serial.println("Acceleration along X,Y,Z axis in [mg]: ");
     Serial.print(acc_X);
     Serial.print(" ");
@@ -94,11 +137,12 @@ void loop()
     Serial.print(" ");
     Serial.print(acc_Z);
     Serial.println(" ");
-    #endif
+#endif
   }
-  else
+  else /* status == '0' -> data not ready */
   {
     Serial.println("No data in output register.");
   }
+  
   delay(250);
 }

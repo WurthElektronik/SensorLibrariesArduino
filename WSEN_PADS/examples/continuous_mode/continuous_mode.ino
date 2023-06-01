@@ -42,49 +42,94 @@
 #include "WSEN_PADS.h"
 
 Sensor_PADS sensor;
+int status;
 
 //The Output Data Rate in Hz
 int ODR = 1;
 
 void setup()
 {
-
+  delay(1000);
   Serial.begin(9600);
 
   // Initialize the I2C interface
   sensor.init(PADS_ADDRESS_I2C_1); 
 
   // Set the free run mode with given ODR
-  sensor.set_continuous_mode(ODR);  
+  if (WE_FAIL == sensor.set_continuous_mode(ODR))
+  {
+    Serial.print("Error: set_continuous_mode() failed. STOP!");
+    while(1);
+  }
 
   // Enable low-noise configuration
-  sensor.set_low_noise_mode();
+  if (WE_FAIL == sensor.set_low_noise_mode())
+  {
+    Serial.print("Error: set_low_noise_mode() failed. STOP!");
+    while(1);
+  }
 
   // Enable the additional low pass filter
-  sensor.set_low_pass_configuration();
+  if (WE_FAIL == sensor.set_low_pass_configuration())
+  {
+    Serial.print("Error: set_low_pass_configuration() failed. STOP!");
+    while(1);
+  }
 
 }
 
 void loop()
 {
 
-  // Read and calculate the temperature
-  float temperature = sensor.read_temperature();
+  PADS_state_t stateTemperature;
+  PADS_state_t statePressure;
+  status = sensor.ready_to_read(&stateTemperature, &statePressure);
+  if (WE_FAIL == status)
+  {
+    Serial.print("Error: Sensor DRDY temperature status not readable. STOP!");
+    while(1);
+  }
+  else if (0 == stateTemperature)
+  {
+  Serial.print("Error: temperature DRDY = 0.");
+  }
+  else
+  {
+  
+    // Read and calculate the temperature
+    float temperature;
+    sensor.read_temperature(&temperature);
+  
+    Serial.print("temperature: ");
+  
+    // Print the temperature on the serial monitor
+    Serial.print(temperature);
+    Serial.println(" degC");
+  
+  }
 
-  Serial.print("temperature: ");
+  if (0 == statePressure)
+  {
+    Serial.print("Error: pressure DRDY = 0.");
+  }
+  else
+  {
+    // Read and calculate the pressure
+    float pressure;
+    if (WE_FAIL == sensor.read_pressure(&pressure))
+    {
+      Serial.print("Error: read_pressure(). STOP!");
+      while(1);
+    }
+  
+    Serial.print("pressure: ");
+  
+    // Print the pressure on the serial monitor
+    Serial.print(pressure);
+    Serial.println(" kPa");
+  }
 
-  // Print the temperature on the serial monitor
-  Serial.print(temperature);
-  Serial.println(" degC");
 
-   // Read and calculate the pressure
-  float pressure = sensor.read_pressure();
-
-  Serial.print("pressure: ");
-
-  // Print the pressure on the serial monitor
-  Serial.print(pressure);
-  Serial.println(" kPa");
   Serial.println("-----------------------");
 
   // Waiting time between measurement
@@ -94,4 +139,3 @@ void loop()
   delay(waitMillis);
 
 }
-

@@ -38,8 +38,8 @@ public:
 	int ODR;
     int select_ODR();
 
-	void set_single_conversion();
-    void set_continuous_mode(int ODR);
+	int set_single_conversion();
+    int set_continuous_mode(int ODR);
 
 	/*get the temperature and Humidity Output data  */
 
@@ -57,12 +57,12 @@ public:
 	uint16_t get_T0_OUT();
 
 	/* Temperature and Humidity data available State */
-
-	int8_t get_TempStatus();
-	int8_t get_HumStatus();
+	int get_StatusDrdy(HIDS_state_t *temp_state, HIDS_state_t *humidity_state);
+	int get_TempStatus();
+    int get_HumStatus();
 	
-	float get_Humidity();
-	float get_Temperature();
+	int get_Humidity(float *relHum);
+	int get_Temperature(float *temperature);
 
 };
 

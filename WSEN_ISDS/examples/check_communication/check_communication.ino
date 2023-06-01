@@ -35,6 +35,7 @@
 #include "WSEN_ISDS.h"
 
 Sensor_ISDS sensor;
+int status;
 
 void setup()
 {
@@ -47,6 +48,12 @@ void setup()
 
   // Get the device ID for this sensor
   int sensor_ID = sensor.get_DeviceID();
+  if (WE_FAIL == sensor_ID)
+  {
+    Serial.println("Error: get_DeviceID(). Stop!");
+    while(1);
+  }
+  
   Serial.print("Sensor ID: ");
 
   // Print the device ID in hexadecimal on the serial monitor

@@ -37,6 +37,7 @@
 #include "WSEN_ITDS.h"
 
 Sensor_ITDS sensor;
+int status;
 
 void setup()
 {
@@ -57,14 +58,26 @@ void setup()
 void loop()
 {
     // Check if sensor is ready to measure the temperature
-  if (sensor.is_Temp_Ready())
+
+  status = -1;
+  status = sensor.is_Temp_Ready();
+    
+  if (WE_FAIL == status)
   {
-    //Print the temperature on the serial monitor
-    Serial.println(sensor.get_temperature());
+    Serial.println("Error: Sensor status register read failed.");
+  }
+  else if (0 == status)
+  {
+    Serial.println("Error: Sensor not ready.");
   }
   else
   {
-    Serial.println("Sensor not ready.");
+    //Print the temperature on the serial monitor
+    int temperature_degC = sensor.get_temperature();
+    Serial.print("T= ");
+    Serial.print(temperature_degC);
+    Serial.println(" deg C");
   }
+
   delay(1000);
 }
